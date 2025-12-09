@@ -1,0 +1,9 @@
+:luna,holy:...
+:bf:haha what now
+:luna,holy:flx.changeBG.SEPTUAGINTBG.cpp
+:luna,septuagint:flx.switchDad.LUNASEPTUAGINT.cpp
+:bf,upset:oh no
+:luna,septuagint:i  t   w  o  n  t   b  e   e  a  s  y                          f  r  o  m   h  e  r  e
+:bf,confused:we can talk about this
+:luna,septuagint:n  o   t  i  m  e
+:luna,septuagint:flx.startSong.playstate(septuagint.cpp)

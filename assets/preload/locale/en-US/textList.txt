@@ -3,9 +3,9 @@
 // TITLE STATE
 
 // OUTDATED SUBSTATE //
-introWarningFirstPlay==Hello! This mod utilizes shaders that may be of disturbance to some. If you wish to disable these, press N, otherwise press Y. You can change this in options. Also, Supernovae and Glitch are not meant to be taken seriously and are not composed by me. Supernovae is by ArchWk, and Glitch is by The Boneyard.
-introWarningSeen==Hello! This mod utilizes shaders that may be of disturbance to some. If you wish to disable these, turn off the Eyesores option in the options menu. Also, Supernovae and Glitch are not meant to be taken seriously and are not composed by me. Supernovae is by ArchWk, and Glitch is by The Boneyard. Press Enter to continue.
-intoWarningExpunged==Coward.
+introWarningFirstPlay==Hello! Please note that this mod utilizes shaders that may be of disturbance to some. If you still wish to play, press Y. Also, please note that this is mostly a joke mod, and is not meant to be taken seriously.
+introWarningSeen==Hello! Please note that this mod utilizes shaders that may be of disturbance to some. If you still wish to play, press enter to continue. Also, please note that this is mostly a joke mod, and is not meant to be taken seriously.
+intoWarningExpunged==im not done with you.
 
 // Main Menu State //
 main_story==Story Mode
@@ -14,36 +14,53 @@ main_freeplay_glitch==MY Play
 main_credits==Credits
 main_ost==OST
 main_options==Options
+main_changelog==Changelog
 main_discord==Discord
 main_resetdata==Press R to reset your data
 main_warningdata==Are you sure you want to reset all of your data?
 
 // Compatibility Mode Screen//
-compat_warning==Do you want to enable compatibility mode?:linebreak:It will help on lag/crashes on low-end PCs, but disables some special effects.
-compat_yes==Yes
-compat_no==No
+compat_warning==PLEASE NOTE if the vocals and inst desync, pause and unpause the game.:linebreak:I know, it's not practical. But besides that, enjoy!!
+compat_yes==Okay
 
 // Main Menu Descriptions //
 desc_story==Play the story mode to unlock new characters, and understand the story!
 desc_freeplay==Play any song as you wish and get new scores!
-desc_freeplay_glitch==Play my song as I wish and fail.
+desc_freeplay_glitch==SINCE YOU WANNA CHEAT? PLAY MY SONG AND FAIL.
 desc_credits==Look at the people who have worked or contributed to the mod!
 desc_ost==Listen to the songs of the mod.
 desc_options==Adjust game settings and keybinds.
-desc_discord==Join the official Vs. Dave and Bambi Discord!
+desc_changelog==View every previous update to the VS Luna mod.
+desc_discord==Join the official VS Luna Discord!
 
 // Freeplay State //
 freeplay_dave==Story
 freeplay_joke==Joke
 freeplay_extra==Extra
-freeplay_terminal==Console
+freeplay_iykyk==IYKYK
+freeplay_terminal==Terminal
 
 freeplay_personalBest==PERSONAL BEST:
 freeplay_hard==HARD
 freeplay_normal==NORMAL
 freeplay_easy==EASY
+freeplay_extrakeys==EXTRA KEYS
+freeplay_pussy==PUSSY
 freeplay_finale==FINALE
 freeplay_fucked==YOU'RE FUCKED
+freeplay_fuckedek==YOU CAN'T DO THIS
+freeplay_default==LUNA
+freeplay_scary==HALLOWEEN
+freeplay_obama==OBAMA
+freeplay_gold==GOLDEN LUNA
+freeplay_puda==PUDA
+freeplay_alls==ALLS
+freeplay_noah==PINECONE EATER
+freeplay_sus==SUS
+freeplay_termmm==TERMINAL
+freeplay_extreme==EXTREME
+freeplay_spectre==SPECTRE
+freeplay_slave==SLAVERY
 
 freeplay_skipChar==Hold CTRL To Skip Character Selection
 
@@ -51,8 +68,10 @@ freeplay_skipChar==Hold CTRL To Skip Character Selection
 pause_Resume==Resume
 pause_Restart Song==Restart Song
 pause_Change Character==Change Character
+pause_Skip Time==Skip Time
 pause_Exit to menu==Exit To Menu
-pause_No Miss Mode==No Miss Mode
+pause_Practice Mode==Practice Mode
+pause_Botplay==Botplay
 
 // Options State //
 option_change_keybinds==Change Keybinds
@@ -105,21 +124,23 @@ keybind_preset==Keybind Presets:
 // Story Mode State //
 story_track==Tracks
 story_weekScore==WEEK SCORE:
-story_tutorial==Dave's Funkin Class
-story_daveWeek==Dave’s Fun Rapping Battle!
-story_bambiWeek==Mr. Bambi’s Fun Corn Maze!
-story_finale==The Finale
-story_festivalWeek==Bambi’s Corn Festival!
-story_masterWeek==Bambi's Master Week!
+story_tutorial==Luna teaches you FNF!!!!!!!
+story_lunaWeek==It begins.....
+story_finalWeek==THE FINAL
+story_disorientedWeek==DiSoRiEnTeD
+story_challengeWeek==Luna has a challenge for you
+story_spectreWeek==THE INVITATION PAID OFF, or did it..?
+story_hortasWeek==THE LEAKERS ARE WET RN
+story_masterWeek==SPAM MASTER VS SPAM GOD
 story_masterWeekToPlay==?????????
 
 // CHARACTER SELECT STATE //
-character_reset==Press R To Reset
+character_reset==If the characters are locked, press 7 To reset
 
 // Cool Util / Diffs //
 play_hard==HARD
 play_normal==NORMAL
-play_easy==EASY
+play_easy==Extra Keys
 
 // Play State //
 play_score==Score:
@@ -128,37 +149,48 @@ play_accuracy==Accuracy:
 fnaf_retry==Retry?
 
 // Credits Words //
-supernovae_credit==Original Song made by ArchWk!
-glitch_credit==Original Song made by DeadShadow and PixelGH!
-mealie_credit==Original Song made by Alexander Cooper 19!
-overdrive_credit==Original Song made by Top 10 Awesome!
 unfairness_credit==Ghost Tapping is forced off! FUCK YOU!
+kys_credit==YOU SHOULDN'T HAVE COME HERE
+heart-of-gold_credit==Luna can drain your health, be careful!
+lunas-arcade_credit==Luna can drain your health, be careful!
+cuberoot_credit==Notes are floating, be careful!
+lost_credit==You get lost in a dark pumpkin patch...
+the-biggest-bird_credit==I think Luna is the biggest bird ngl
+roses_credit==Hating Simulator...
+love-songs_credit==there so beautiful 🥺
+blocked_credit==ALLS the snake!
 cheating_credit==Notes are scrambled! FUCK YOU!
 exploitation_credit==You won't survive
 kabunga_credit==OH MY GOD I JUST DEFLATED
+noah-the-pinecone_credit==Noah the pinecone eater
+wow-two_credit==lets have wow2 im so junky
+meow_credit==Yeah!
+luna-in-among-us_credit==I know Luna's the imposter, I just can't prove it...                                                                OMG IT'S 3 AM WTF DO I DO IOM goIN  CRAZY
+alls-world_credit==All of this years brainrot, brought to you by Alls
+luna-the-slave_credit==LESS TALK, MORE COTTON PICKING
+unethical_credit==PHILTRIX
+opposition_credit==wait why is alls powerful what the fuck
+clamorous_credit==t h e  l o w  e n d
 
 //SUBTITLES
 // Blocked Subtitles //
-blocked_sub1==I block you...
-blocked_sub2==You are monster...
-blocked_sub3==You ruined my life!
-blocked_sub4==Moldy I swear to god I'll block you
-blocked_sub5==FOREVER.
-blocked_sub6==I'm trying to...
-blocked_sub7==No I'm not trying help you...
-blocked_sub8==Because you go watch me...
-blocked_sub9==Because...
-blocked_sub10==go watch me scribe me
-blocked_sub11==Whatever.
+blocked_sub1==pussy
+blocked_sub2==fuck niggers
+blocked_sub3==yo what's up chat, welcome to the stream
+blocked_sub4==today we finna fuck up some niggers on skyblock
+blocked_sub5==also go sub to my channel
+blocked_sub6==if you don't
+blocked_sub7==then you're an actual pussy
+blocked_sub8==and your bitch ass doesn't count
 
-// Corn Theft Subtitles //
-ctheft_sub1==Because he add me...
-ctheft_sub2==Why you add me...
-ctheft_sub3==I-
-ctheft_sub4==I don't care...
-ctheft_sub5==You want to
-ctheft_sub6==I'll block you
-ctheft_sub7==I'm never coming back again.
+// secret subtitles //
+wouldroast_sub1==I would roast you, but my mom said I'm not allowed to burn trash
+
+// VS Luna Free Trial Subtitles //
+trial_sub1==METROOO, yo pierre you wanna come out here?
+trial_sub2==AAAAAAAAAAAAAAAAAAAIIIIIIII
+trial_sub3==aaaahhh pluh
+trial_sub4==FIRE IN THE HOLEEE!!!
 
 // Maze Subtitles //
 maze_sub1==I mean...
@@ -173,23 +205,6 @@ maze_sub9==Sure.
 maze_sub10==What you want to play?
 maze_sub11==You are bully me?
 maze_sub12==Never come back again.
-
-// Mealie Subtitles //
-mealie_sub1==I gonna block you!
-mealie_sub2==I going you house
-mealie_sub3==And I going you FALL
-mealie_sub4==The bed your-
-mealie_sub5==Your house!
-mealie_sub6==Isaac...
-mealie_sub7==Shut da fock up.
-mealie_sub8==Stop use da focking...
-mealie_sub9==Ah oh I'm gonna break my
-mealie_sub10==PHONE!
-mealie_sub11==Is you wanted the-
-mealie_sub12==fucking phone?
-mealie_sub13==HOLY SHIT!
-mealie_sub14==You fucking liar Moldy!
-mealie_sub15==Go to focking hell!
 
 // Shredder Subtitles //
 shred_sub1==Oh my god...
@@ -206,27 +221,6 @@ shred_sub11==Check your closet motherfuckers
 shred_sub12==Check your closet mothafuckas!
 shred_sub13==That's it!
 shred_sub14==That's it!
-
-// Exploitation Subtitles //
-exploit_sub1==The fuck?
-exploit_sub2==Ehhhhhhhhhhhhhhhhhhhhh!!!
-exploit_sub3==Wahahauahahahuehehe!
-exploit_sub4==Fucking phone...
-exploit_sub5==Eoooooooooooooooooo
-exploit_sub6==Seeeiuuuuuuuuuuuuuu
-exploit_sub7==Naaaaaaaaaaaaaaaaaaaaa
-exploit_sub8==Aehehehe...
-exploit_sub9==Oh he...
-exploit_sub10==You are so
-exploit_sub11==get trolled!
-exploit_sub12==Whoopsies...
-exploit_sub13==You lying!
-exploit_sub14==YOU LYING!
-exploit_sub15==A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€
-
-// Escape from California Subtitles //
-california_sub1==Help me! I'm stuck in California!
-california_sub2==WAAAAAAAAAAAAAAAAAAAAAA!-
 
 // Cheating Subtitles //
 cheating_sub1==I block you.
@@ -269,50 +263,6 @@ unfairness_sub5==Look!
 unfairness_sub6==I'm not kidding this is...
 unfairness_sub7==Fucking real!
 
-//Vs Dave Rap Subtitles//
-daverap_sub1==VS Dave, is kinda poopoo
-daverap_sub2==It reminds me of doodoo
-daverap_sub3==Oooooh!
-daverap_sub4==When I think of Obama
-daverap_sub5==Fortnite
-daverap_sub6==It makes me farty sharty
-daverap_sub7==Yeah!
-daverap_sub8==Slipped on a banana
-daverap_sub9==Ow!
-daverap_sub10==We drivin' the Jalopy
-daverap_sub11==Hell yeah!
-daverap_sub12==Gordon Freeman is green
-daverap_sub13==Sub to Stats45
-daverap_sub14==Yeah!
-daverap_sub15==My dick itch, it burn like Baldi sick
-
-//Memory Subtitles//
-memory_sub1==Well...
-memory_sub2==So far this has been such a ride,
-memory_sub3==But I want to say this.
-memory_sub4==Even if you might leave to go up against new opponents,
-memory_sub5==Remember that I will always be with you in your heart,
-memory_sub6==And that I will support you along the way
-memory_sub7==as much as I can. But...
-memory_sub8==Before things come to an end,
-memory_sub9==Wanna settle this rap with me?
-memory_sub10==Yeah!
-memory_sub11==Awesome! Let's do it!
-
-//Vs Dave Rap Two Subtitles//
-daveraptwo_sub1==Dave is the name
-daveraptwo_sub2==Play my game
-daveraptwo_sub3==I am Dave and I have a mod
-daveraptwo_sub4==I am Dave and I am god
-daveraptwo_sub5==My weewee itches (yum)
-daveraptwo_sub6==3.0
-daveraptwo_sub7==Vs Dave, I am gay
-daveraptwo_sub8==Mr. Bambi loves break the phone (ha)
-daveraptwo_sub9==Dive going gamestop with buy game Xbox
-daveraptwo_sub10==Go play the mod Vs Dave and Bambi 3.0
-daveraptwo_sub11==Out now on GameBanana!
-daveraptwo_sub12==Yum.
-
 //Indignancy (screwed 2) Subtitles//
 indignancy_sub1==Kill me, I want to die
 indignancy_sub2==Kick me, please senpai
@@ -326,81 +276,41 @@ indignancy_sub5==AuuuuuuAAAAAAAAAAAAAAA-
 
 // Credits State //
 credits_dev==Developers
-credits_translator==Translators
+credits_theCat==The Cat
 credits_contributor==Contributors
 credits_betaTester==Beta Testers
 credits_specialThanks==Special Thanks
+credits_ekaCreator==Extra Keys Addon Creator
 
 credits_songby==Song by
 
-//developers 
-credit_MoldyGH==Director, Creator, Programmer, Musician, Main Developer
-credit_MissingTextureMan101==Secondary Developer and Programmer
+//Developers 
+credit_Johnny5997==Director, Creator, Programmer, Musician, Main Developer
+credit_MoldyGH==Programmer, Composer, Dave Engine Creator
+credit_MissingTextureMan101==Secondary Developer For Dave Engine
 credit_rapparep lol==Main Artist
-credit_TheBuilderXD==Secondary Artist
-credit_Erizur==New Main Menu Programmer, Artist & Spanish Translator
-credit_T5mpler==Programmer & Assistor
-credit_Zmac==3D Backgrounds, Intro text help
-credit_pointy==Artist & Charter
-credit_Billy Bobbo==Moral Support & Idea Suggesting
 
-//translators
-credit_dani==Spanish Translator
-credit_Aizakku==Portguese-Brazillian Translator
-credit_Soulegal==Portguese-Brazillian Translator
-
-//contributors
-credit_Steph45==Minor programming
-credit_evdial==Bambi Week Main Artist
-credit_wugalex==BG Artist
-credit_Jukebox==BG Artist
-credit_Oxygen==Composer
-credit_Alexander Cooper 19==Composer, Charter
+//Contributors
+credit_Luna==THE CAT HERSELF
+credit_Noah==Beta Tester, Composer, Art, Noah Engine Menu Music
 credit_Aadsta==Composer, BG Artist
 credit_Project Tea==Charter
 credit_Top 10 Awesome==Composer, Funny Guy
-credit_BombasticHype==Did a House cutscene
-credit_Sky!==Made Bambi Voice Bank Used in the New Bambi Songs Made By Moldy
-credit_Ruby==Adventure Song
-credit_Lancey==Menu BG Artist
-credit_Cup==Made the song headings 
-credit_ShiftyTM==Made Tuned Bambi chromatic used in Maze & Indignancy
-credit_Paraso==Menu BG Artist
-credit_SAMMYPIGZY==Artist
-credit_R34LD34L==Composer
-credit_Devianator==Help with Credits icons
-credit_sk0rbias==Menu Artist
-credit_Your mom==Composed Vs Dave Rap, totally.
+credit_Ruby==Composer, Luna's Chromatics
+credit_Remove.BG==Amazing Image Background Remover
+credit_Lancey==Composer
 credit_sibottle==Composer
-credit_chromasen==Help with window code
+credit_4k Funny==Composer
+credit_Cynda==Composer
+credit_Maevings==Composer
+credit_Instagram==Sounds for certain joke songs
+credit_Kaash Paige==Singer and song writer of Love Songs
 
 //Beta Testers
-credit_letsy==Beta Tester
-credit_wildy==Beta Tester
-credit_peejeada==Beta Tester & Supporter
-credit_bendygaming_1==Beta Tester, Moldy super awesome brother
-credit_YourAverageMental==Beta Tester
-credit_vex==Beta Tester
-credit_xml==Beta Tester
-credit_ztgds==Minor programming help, Beta Tester
-credit_ashtonyes==Beta Tester
-credit_Silver Escaper==Beta Tester
-credit_TrustVVorthy==Beta Tester
-credit_Gorbini==Beta Tester
-credit_Log Man==Beta Tester
-credit_Mooncakeez==Beta Tester
-credit_Foxnap==Beta Tester
-credit_lotuswaterz==Beta Tester
-credit_mantis==Beta Tester
-credit_ArturSef==Beta Tester
-credit_normal==Beta Tester
-credit_Rendurse==Beta Tester
-credit_Lordryan1999==Beta Tester
-credit_Vanquiler==Beta Tester
-credit_Villezen==Beta Tester
-credit_TecheVent==Beta Tester
-credit_miko==Beta Tester
-credit_Cotiles==Beta Tester
+credit_Spencer==Beta Tester
+
+//Extra Keys Addon Creator
+credit_Magman==Extra Keys Charter, Coder, Shaggy Covers, 3D Extra Keys Note Sprite
 
 //Special Thanks
-credit_You!==For playing the mod and contributing to the growth of the community we created.
+credit_You!==For playing the mod and contributing to the growth of the community we're creating. Thank you for being apart of VS Luna.

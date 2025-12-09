@@ -1,0 +1,11 @@
+:bf,confused:okay... i beat you... so who are you?
+:luna,nomo:.
+:bf,confused:well?
+:luna,nomo:.
+:luna,nomo:switchDad Flx.DISORIENTEDLUNA.dat
+:luna,dis:YOU ARENT WELCOME HERE
+:bf,confused:where is here?
+:luna,dis:flx.healthToLower==0.5
+:bf,confused:huh???
+:luna,dis:flx.stopDialogue
+:generic:  

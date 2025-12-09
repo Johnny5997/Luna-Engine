@@ -1,0 +1,1 @@
+						FlxG.save.data.unfairnessFound = true;

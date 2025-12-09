@@ -1,0 +1,49 @@
+			case 'joke':
+				if (FlxG.save.data.hasPlayedMasterWeek)
+				{
+					addWeek(['Supernovae', 'Glitch', 'Master'], 5, ['bambi-joke']);
+				}				
+				if (!FlxG.save.data.terminalFound)
+				{
+					if (FlxG.save.data.cheatingFound)
+						addWeek(['Cheating'], 14, ['bambi-3d']);
+					if (FlxG.save.data.unfairnessFound)
+						addWeek(['Unfairness'], 15, ['bambi-unfair']);
+				}
+				if (FlxG.save.data.exbungoFound)
+					addWeek(['Kabunga'], 6, ['exbungo']);
+			    addWeek(['dead-zoee'], 1, ['luna']);
+			    addWeek(['the-biggest-bird'], 1, ['luna']);
+			    addWeek(['obama'], 7, ['obama']);
+			    addWeek(['kys'], 3, ['lunafinal']);
+			    addWeek(['Vs-Dave-Rap'], 1, ['dave-cool']);
+				if(FlxG.save.data.vsDaveRapTwoFound)
+				{
+					addWeek(['Vs-Dave-Rap-Two'], 1, ['dave-cool']);
+				}
+
+
+
+
+			case 'extras':
+				if (FlxG.save.data.recursedUnlocked)
+					addWeek(['Recursed'], 10, ['recurser']);
+			    addWeek(['Wheels', 'Apprentice', 'Stereo-Madness', 'Roofs'], 1, ['luna', 'luna', 'luna', 'luna']);
+				addWeek(['Cuberoot'], 1, ['luna3d']);
+			    addWeek(['Lunacone'], 1, ['lunacone']);
+			    addWeek(['Lost'], 6, ['lunahalloween']);
+			    addWeek(['Heart-Of-Gold'], 5, ['lunagold']);
+				addWeek(['Overdrive'], 13, ['dave-awesome']);
+				addWeek(['Indignancy'], 2, ['bambi-angey']);
+				addWeek(['Memory'], 1, ['dave']);
+			case 'terminal':
+				if (FlxG.save.data.cheatingFound)
+					addWeek(['Cheating'], 14, ['bambi-3d']);
+				if (FlxG.save.data.unfairnessFound)
+					addWeek(['Unfairness'], 15, ['bambi-unfair']);
+				if (FlxG.save.data.exploitationFound)
+					addWeek(['Exploitation'], 16, ['expunged']);
+
+				addWeek(['Enter Terminal'], 17, ['terminal']);
+		}
+	}

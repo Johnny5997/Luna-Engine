@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="sep.png"><SubTexture name="sep idle0000" x="709" y="2660" width="261" height="339" frameX="-738" frameY="-401" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep idle0001" x="1797" y="2660" width="387" height="316" frameX="-660" frameY="-405" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep idle0002" x="2321" y="2166" width="634" height="375" frameX="-533" frameY="-400" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep idle0003" x="991" y="2166" width="731" height="414" frameX="-511" frameY="-336" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep idle0004" x="1170" y="1501" width="1004" height="546" frameX="-342" frameY="-268" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep idle0005" x="919" y="0" width="1201" height="772" frameX="-259" frameY="-189" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep idle0006" x="1170" y="1501" width="1004" height="546" frameX="-342" frameY="-268" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep idle0007" x="991" y="2166" width="731" height="414" frameX="-511" frameY="-336" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep idle0008" x="2321" y="2166" width="634" height="375" frameX="-533" frameY="-400" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep idle0009" x="1797" y="2660" width="387" height="316" frameX="-660" frameY="-405" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep idle0010" x="709" y="2660" width="261" height="339" frameX="-738" frameY="-401" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep down0000" x="413" y="2660" width="296" height="354" frameX="-701" frameY="-265" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep down0001" x="608" y="2166" width="383" height="417" frameX="-630" frameY="-266" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep down0002" x="0" y="2166" width="608" height="494" frameX="-478" frameY="-258" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep down0003" x="2120" y="0" width="1003" height="682" frameX="-211" frameY="-194" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep right0000" x="1722" y="2166" width="599" height="377" frameX="-548" frameY="-364" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep right0001" x="2174" y="1501" width="878" height="508" frameX="-392" frameY="-233" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep right0002" x="0" y="1501" width="1170" height="665" frameX="-186" frameY="-77" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep right0003" x="610" y="787" width="1455" height="713" frameX="-3" frameY="-29" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep alt0000" x="970" y="2660" width="299" height="339" frameX="-738" frameY="-401" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep left0000" x="2791" y="682" width="302" height="357" frameX="-705" frameY="-384" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep left0001" x="0" y="2660" width="413" height="370" frameX="-648" frameY="-371" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep left0002" x="1269" y="2660" width="528" height="338" frameX="-590" frameY="-403" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep left0003" x="2184" y="2660" width="691" height="309" frameX="-507" frameY="-433" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep up0000" x="2505" y="682" width="286" height="548" frameX="-709" frameY="-202" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep up0001" x="2120" y="682" width="385" height="647" frameX="-662" frameY="-108" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep up0002" x="0" y="787" width="610" height="714" frameX="-548" frameY="-45" frameWidth="1461" frameHeight="966" />
+<SubTexture name="sep up0003" x="0" y="0" width="919" height="787" frameX="-391" frameY="-2" frameWidth="1461" frameHeight="966" />
+</TextureAtlas>

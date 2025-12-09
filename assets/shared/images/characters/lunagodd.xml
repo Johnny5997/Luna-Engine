@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="DADDY_DEAREST.png">
+	<!-- Created with Adobe Animate version 18.0.1.115 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Dad idle dance0000" x="816" y="818" width="419" height="767" frameX="-6" frameY="0" frameWidth="429" frameHeight="767"/>
+</TextureAtlas>

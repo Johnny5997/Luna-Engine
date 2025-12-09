@@ -1,0 +1,1002 @@
+package;
+
+import flixel.util.FlxTimer;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.system.FlxSoundGroup;
+import flixel.ui.FlxBar;
+import flixel.system.FlxSound;
+import flash.text.TextField;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.FlxObject;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import flixel.util.FlxStringUtil;
+import lime.utils.Assets;
+#if desktop
+import Discord.DiscordClient;
+#end
+using StringTools;
+
+class MusicPlayerState extends MusicBeatState
+{
+    // Category system matching freeplay
+    private var categories:Array<String> = ['dave', 'joke', 'extras'];
+    var translatedCategory:Array<String> = [
+        LanguageManager.getTextString('freeplay_dave'),
+        LanguageManager.getTextString('freeplay_joke'),
+        LanguageManager.getTextString('freeplay_extra')
+    ];
+    
+    private var currentCategory:Int = 0;
+    private var songs:Array<PlaySongMetadata> = [];
+    private var allSongs:Array<PlaySongMetadata> = []; // Store all songs
+    
+    private var grpSongs:FlxTypedGroup<Alphabet>;
+    private var iconArray:Array<HealthIcon> = [];
+    var curSelected:Int = 0;
+    var CurVocals:FlxSound;
+    var currentlyPlaying:Bool = false;
+    public var playdist:Float = 0;
+    var bg:FlxSprite;
+    
+    // Playback controls
+    private var playbackSpeed:Float = 1.0;
+    private var speedSteps:Array<Float> = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+    private var currentSpeedIndex:Int = 3; // Start at 1.0x
+    private var isLooping:Bool = true;
+    private var isShuffled:Bool = false;
+    private var shuffledSongs:Array<PlaySongMetadata> = [];
+    private var shuffleIndex:Int = 0;
+
+    // UI Elements
+    private var healthBarBG:FlxSprite;
+    private var healthBar:FlxBar;
+    private var iconP1:HealthIcon;
+    private var iconP2:HealthIcon;
+    private var barText:FlxText;
+    private var categoryText:FlxText;
+    private var speedText:FlxText;
+    private var controlsText:FlxText;
+    private var songInfoText:FlxText;
+    private var shuffleText:FlxText;
+    
+    // Category selection mode
+    private var inCategorySelect:Bool = true;
+    private var categoryIcons:Array<FlxSprite> = [];
+    private var categoryTitles:Array<Alphabet> = [];
+    private var camFollow:FlxObject;
+    
+    // Colors matching freeplay
+    var songColors:Array<FlxColor> = [
+        0xFF00137F, 0xFFB4B4B4, 0xFF8C8C8C, 0xFF000000, 0xFFFFFFFF,
+        0xFFFFD700, 0xFFFFA500, 0xFFC37A50, FlxColor.fromRGB(140, 75, 0),
+        0xFFB4B4B4, FlxColor.fromRGB(44, 44, 44), FlxColor.fromRGB(148, 181, 102),
+        FlxColor.fromRGB(189, 167, 129), FlxColor.fromRGB(187, 45, 45), 0xFF119A2B,
+        0xFFFF0000, 0xFF000000, 0xF5BB27, FlxColor.fromRGB(161, 208, 129),
+        FlxColor.fromRGB(223, 207, 77), FlxColor.fromRGB(6, 15, 0),
+        FlxColor.fromRGB(18, 7, 72), FlxColor.fromRGB(153, 42, 51),
+        FlxColor.fromRGB(108, 38, 82), FlxColor.fromRGB(64, 23, 49),
+        FlxColor.fromRGB(83, 48, 28)
+    ];
+
+    override function create()
+    {
+        FlxG.autoPause = false;
+        
+        bg = new FlxSprite().loadGraphic(MainMenuState.randomizeBG());
+        bg.color = 0xFFFD719B;
+        bg.scrollFactor.set(0, 0);
+        add(bg);
+
+        #if desktop
+        DiscordClient.changePresence("In the Music Player", null);
+        #end
+
+        // Check for terminal unlock
+        if (FlxG.save.data.terminalFound)
+        {
+            categories = ['dave', 'joke', 'extras', 'terminal'];
+            translatedCategory = [
+                LanguageManager.getTextString('freeplay_dave'),
+                LanguageManager.getTextString('freeplay_joke'),
+                LanguageManager.getTextString('freeplay_extra'),
+                LanguageManager.getTextString('freeplay_terminal')
+            ];
+        }
+
+        // Load all songs from all categories
+        loadAllSongs();
+        
+        // Setup category selection
+        setupCategorySelect();
+        
+        // Setup playback UI
+        setupPlaybackUI();
+        
+        super.create();
+    }
+
+    function loadAllSongs()
+    {
+        // Dave category
+        addSongToAll('Warmup', 1, 'luna', false, true);
+        addSongToAll('Luna', 1, 'luna', false, true);
+        addSongToAll('Treats', 1, 'luna', false, true);
+        addSongToAll('Scratch', 2, 'lunamad', false, true);
+        addSongToAll('Fatalistic', 3, 'lunafinal', false, true);
+        addSongToAll('Nomophobia', 4, 'lunanomo', false, true);
+        addSongToAll('Disoriented', 3, 'lunadis', false, true);
+        addSongToAll('Action', 1, 'luna3d', false, true);
+        addSongToAll('Action-Two', 1, 'luna3d', false, false);
+        addSongToAll('Meow', 1, 'luna', false, true);
+        addSongToAll('Galactic', 23, 'lunaspectre', false, true);
+        addSongToAll('Milky-Way', 23, 'lunaspectre', false, true);
+        addSongToAll('Master', 24, 'lunamadspectre', false, true);
+        addSongToAll('Heavenly', 19, 'holyluna', false, true);
+        addSongToAll('Septuagint', 20, 'lunaseptuagint', false, true);
+        addSongToAll('Clamorous', 21, 'lunaclamorous', false, true);
+        addSongToAll('Psychosis', 22, 'sisters', false, true);
+        
+        if (FlxG.save.data.hasPlayedMasterWeek)
+        {
+            addSongToAll('Cheating', 14, 'bambi-3d', false, true);
+            addSongToAll('Unfairness', 15, 'bambi-unfair', false, true);
+        }
+
+        // Joke category
+        addSongToAll('dead-zoee', 8, 'puda', false, true, 'joke');
+        addSongToAll('lunatopia', 1, 'lunar', false, true, 'joke');
+        addSongToAll('vs-luna-free-trial', 1, 'lunar', false, true, 'joke');
+        addSongToAll('the-biggest-bird', 1, 'luna', false, true, 'joke');
+        addSongToAll('wow-two', 1, 'luna', false, true, 'joke');
+        addSongToAll('shipped-my-pants', 1, 'elonmusk', false, true, 'joke');
+        addSongToAll('luna-in-among-us', 13, 'impostor', false, true, 'joke');
+        addSongToAll('noah-the-pinecone', 12, 'noahreal', false, true, 'joke');
+        addSongToAll('obama', 7, 'obama', false, true, 'joke');
+        addSongToAll('kys', 3, 'lunagod', false, true, 'joke');
+
+        // Extras category
+        addSongToAll('Wheels', 1, 'luna', false, true, 'extras');
+        addSongToAll('Apprentice', 1, 'luna', false, true, 'extras');
+        addSongToAll('Stereo-Madness', 1, 'luna', false, true, 'extras');
+        addSongToAll('Roofs', 1, 'luna', false, true, 'extras');
+        addSongToAll('Lunas-Arcade', 1, 'luna', false, true, 'extras');
+        addSongToAll('Cuberoot', 1, 'luna3d', false, true, 'extras');
+        addSongToAll('Love-Songs', 2, 'luna3d', false, true, 'extras');
+        addSongToAll('Roses', 9, 'luna-pixel', false, true, 'extras');
+        addSongToAll('Lunacone', 1, 'lunacone', false, true, 'extras');
+        addSongToAll('Tessattack', 18, 'lunatessattack', false, true, 'extras');
+        addSongToAll('Sunshine', 2, 'lunadoll', false, true, 'extras');
+        addSongToAll('Puda', 8, 'puda', false, true, 'extras');
+        addSongToAll('Lost', 6, 'lunahalloween', false, true, 'extras');
+        addSongToAll('Heart-Of-Gold', 5, 'lunagold', false, true, 'extras');
+        
+        if (FlxG.save.data.recursedUnlocked)
+        {
+            addSongToAll('Recursed', 10, 'dark', false, true, 'extras');
+            addSongToAll('Entity', 10, 'dark', false, true, 'extras');
+        }
+
+        // Terminal category
+        if (FlxG.save.data.terminalFound)
+        {
+            if (FlxG.save.data.exbungoFound)
+            {
+                addSongToAll('Blocked', 11, 'alls', false, true, 'terminal');
+                addSongToAll('Alls-World', 11, 'alls', false, true, 'terminal');
+            }
+            if (FlxG.save.data.burntrashFound)
+            {
+                addSongToAll('i-would-roast-you-but-my-mom-said-im-not-allowed-to-burn-trash', 11, 'alls', false, true, 'terminal');
+            }
+            if (FlxG.save.data.slaveFound)
+            {
+                addSongToAll('Luna-The-Slave', 25, 'lunaslave', false, true, 'terminal');
+            }
+            if (FlxG.save.data.exploitationFound)
+            {
+                addSongToAll('Darkness', 16, 'lunatrueform', false, true, 'terminal');
+            }
+        }
+    }
+
+    function addSongToAll(name:String, week:Int, char:String, bad:Bool, vocals:Bool, ?category:String = 'dave')
+    {
+        allSongs.push(new PlaySongMetadata(name, false, char, bad, vocals, category, week));
+        // Add instrumental version if it has vocals
+        if (vocals)
+        {
+            allSongs.push(new PlaySongMetadata(name, false, char, bad, false, category, week));
+        }
+    }
+
+    function setupCategorySelect()
+    {
+        for (i in 0...categories.length)
+        {
+            var categoryIcon:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image('packs/' + categories[i].toLowerCase(), "preload"));
+            categoryIcon.centerOffsets(false);
+            categoryIcon.x = (1000 * i) + (512 - categoryIcon.width);
+            categoryIcon.y = (FlxG.height / 2) - 256;
+            categoryIcon.antialiasing = true;
+            categoryIcon.scrollFactor.set(1, 1);
+            add(categoryIcon);
+            categoryIcons.push(categoryIcon);
+
+            var nameAlpha:Alphabet = new Alphabet(40, (FlxG.height / 2) - 282, translatedCategory[i], true, false);
+            nameAlpha.x = categoryIcon.x;
+            nameAlpha.scrollFactor.set(1, 1);
+            add(nameAlpha);
+            categoryTitles.push(nameAlpha);
+        }
+
+        // Setup camera follow
+        camFollow = new FlxObject(0, 0, 1, 1);
+        camFollow.setPosition(categoryIcons[currentCategory].x + 256, categoryIcons[currentCategory].y + 256);
+        add(camFollow);
+        
+        FlxG.camera.follow(camFollow, LOCKON, 0.04);
+        FlxG.camera.focusOn(camFollow.getPosition());
+
+        // Category instruction text
+        categoryText = new FlxText(0, FlxG.height - 60, FlxG.width, "LEFT/RIGHT: Select Category | ENTER: Choose | S: Shuffle All | ESC: Back to Menu", 18);
+        categoryText.setFormat(Paths.font("comic.ttf"), 18, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+        categoryText.borderSize = 1.5;
+        categoryText.antialiasing = true;
+        categoryText.scrollFactor.set(0, 0);
+        add(categoryText);
+        
+        // Shuffle indicator
+        shuffleText = new FlxText(10, FlxG.height - 90, 0, "Shuffle: OFF", 20);
+        shuffleText.setFormat(Paths.font("comic.ttf"), 20, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+        shuffleText.borderSize = 1.5;
+        shuffleText.antialiasing = true;
+        shuffleText.scrollFactor.set(0, 0);
+        add(shuffleText);
+    }
+
+    function setupPlaybackUI()
+    {
+        // Health bar for progress
+        healthBarBG = new FlxSprite(0, 50).loadGraphic(Paths.image('ui/healthBar'));
+        healthBarBG.screenCenter(X);
+        healthBarBG.scrollFactor.set(0, 0);
+        healthBarBG.visible = false;
+        add(healthBarBG);
+
+        healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, 
+            Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this, 'playdist', 0, 1);
+        healthBar.scrollFactor.set(0, 0);
+        healthBar.createFilledBar(FlxColor.WHITE, FlxColor.BLACK);
+        healthBar.visible = false;
+        add(healthBar);
+
+        iconP1 = new HealthIcon("bf", true);
+        iconP1.y = healthBar.y - (iconP1.height / 2);
+        iconP1.visible = false;
+        iconP1.scrollFactor.set(0, 0);
+        add(iconP1);
+
+        iconP2 = new HealthIcon("bf-old", false);
+        iconP2.y = healthBar.y - (iconP2.height / 2);
+        iconP2.visible = false;
+        iconP2.scrollFactor.set(0, 0);
+        add(iconP2);
+
+        // Time display
+        barText = new FlxText(healthBarBG.x + healthBarBG.width / 2 - 150, healthBarBG.y + healthBarBG.height + 5, 0, "", 20);
+        barText.setFormat(Paths.font("comic.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+        barText.scrollFactor.set(0, 0);
+        barText.borderSize = 1.5;
+        barText.antialiasing = true;
+        barText.visible = false;
+        add(barText);
+
+        // Speed display
+        speedText = new FlxText(10, 10, 0, "Speed: 1.0x", 24);
+        speedText.setFormat(Paths.font("comic.ttf"), 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+        speedText.borderSize = 1.5;
+        speedText.antialiasing = true;
+        speedText.visible = false;
+        speedText.scrollFactor.set(0, 0);
+        add(speedText);
+
+        // Song info
+        songInfoText = new FlxText(10, 45, FlxG.width - 20, "", 20);
+        songInfoText.setFormat(Paths.font("comic.ttf"), 20, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+        songInfoText.borderSize = 1.5;
+        songInfoText.antialiasing = true;
+        songInfoText.visible = false;
+        songInfoText.scrollFactor.set(0, 0);
+        add(songInfoText);
+
+        // Controls display
+        controlsText = new FlxText(0, FlxG.height - 110, FlxG.width, "", 16);
+        controlsText.setFormat(Paths.font("comic.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+        controlsText.borderSize = 1.5;
+        controlsText.antialiasing = true;
+        controlsText.visible = false;
+        controlsText.scrollFactor.set(0, 0);
+        controlsText.text = "UP/DOWN: Select | ENTER: Play/Pause | LEFT/RIGHT: Seek ±5s\n" +
+                           "Q/E: Speed -/+ | R: Reset Speed | L: Loop On/Off | ESC: Back";
+        add(controlsText);
+
+        // Song list
+        grpSongs = new FlxTypedGroup<Alphabet>();
+        add(grpSongs);
+    }
+
+    function loadCategory()
+    {
+        // Clear current songs
+        for (i in grpSongs.members)
+        {
+            grpSongs.remove(i);
+            i.destroy();
+        }
+        for (i in iconArray)
+        {
+            remove(i);
+            i.destroy();
+        }
+        
+        songs = [];
+        iconArray = [];
+        curSelected = 0;
+
+        // Load songs from selected category or shuffled list
+        if (isShuffled)
+        {
+            songs = shuffledSongs.copy();
+        }
+        else
+        {
+            for (song in allSongs)
+            {
+                if (song.category == categories[currentCategory])
+                {
+                    songs.push(song);
+                }
+            }
+        }
+
+        // Create UI for songs
+        for (i in 0...songs.length)
+        {
+            var songText:Alphabet = new Alphabet(0, (70 * i) + 30, 
+                songs[i].songName + (songs[i].hasVocals ? "" : "-Inst"), true, false);
+            songText.isMenuItem = true;
+            songText.targetY = i;
+            songText.scrollFactor.set();
+            grpSongs.add(songText);
+
+            var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
+            icon.sprTracker = songText;
+            icon.scrollFactor.set();
+            icon.changeState(songs[i].ShowBadIcon ? 'losing' : 'normal');
+            iconArray.push(icon);
+            add(icon);
+        }
+
+        changeSelection(0);
+    }
+
+    override function update(elapsed:Float)
+    {
+        super.update(elapsed);
+
+        if (inCategorySelect)
+        {
+            updateCategorySelect();
+        }
+        else
+        {
+            updateMusicPlayer(elapsed);
+        }
+    }
+
+    function updateCategorySelect()
+    {
+        if (controls.LEFT_P)
+        {
+            changeCategorySelection(-1);
+        }
+        if (controls.RIGHT_P)
+        {
+            changeCategorySelection(1);
+        }
+        if (controls.ACCEPT)
+        {
+            FlxG.sound.play(Paths.sound('confirmMenu'));
+            enterCategory();
+        }
+        if (FlxG.keys.justPressed.S)
+        {
+            toggleShuffle();
+        }
+        if (controls.BACK)
+        {
+            FlxG.autoPause = true;
+            FlxG.sound.play(Paths.sound('cancelMenu'));
+            FlxG.switchState(new MainMenuState());
+        }
+    }
+
+    function toggleShuffle()
+    {
+        isShuffled = !isShuffled;
+        FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+        
+        if (isShuffled)
+        {
+            // Create shuffled list from ALL songs
+            shuffledSongs = [];
+            for (song in allSongs)
+            {
+                shuffledSongs.push(song);
+            }
+            
+            // Fisher-Yates shuffle
+            for (i in 0...shuffledSongs.length)
+            {
+                var j = FlxG.random.int(0, shuffledSongs.length - 1);
+                var temp = shuffledSongs[i];
+                shuffledSongs[i] = shuffledSongs[j];
+                shuffledSongs[j] = temp;
+            }
+            
+            shuffleText.text = "Shuffle: ON (All Songs)";
+            shuffleText.color = FlxColor.LIME;
+        }
+        else
+        {
+            shuffleText.text = "Shuffle: OFF";
+            shuffleText.color = FlxColor.WHITE;
+        }
+    }
+
+    function changeCategorySelection(change:Int)
+    {
+        if (isShuffled)
+            return; // Can't change category in shuffle mode
+            
+        FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+        
+        currentCategory += change;
+        if (currentCategory < 0)
+            currentCategory = categories.length - 1;
+        if (currentCategory >= categories.length)
+            currentCategory = 0;
+        
+        // Update camera position
+        camFollow.x = categoryIcons[currentCategory].x + 256;
+        
+        var colorIndex = currentCategory % songColors.length;
+        FlxTween.color(bg, 0.25, bg.color, songColors[colorIndex]);
+    }
+
+    function enterCategory()
+    {
+        inCategorySelect = false;
+        
+        // Hide category UI
+        for (icon in categoryIcons)
+            FlxTween.tween(icon, {alpha: 0}, 0.3);
+        for (title in categoryTitles)
+            FlxTween.tween(title, {alpha: 0}, 0.3);
+        FlxTween.tween(categoryText, {alpha: 0}, 0.3);
+        FlxTween.tween(shuffleText, {alpha: 0}, 0.3);
+        
+        // Stop camera following for song list
+        FlxG.camera.follow(null);
+        FlxG.camera.scroll.set(0, 0);
+        
+        // Show player UI
+        new FlxTimer().start(0.3, function(tmr:FlxTimer)
+        {
+            for (icon in categoryIcons)
+                icon.visible = false;
+            for (title in categoryTitles)
+                title.visible = false;
+            categoryText.visible = false;
+            shuffleText.visible = false;
+            
+            controlsText.visible = true;
+            speedText.visible = true;
+            songInfoText.visible = true;
+            
+            loadCategory();
+            
+            // Auto-play first song if shuffle is on
+            if (isShuffled && songs.length > 0)
+            {
+                playCurrentSong();
+            }
+        });
+    }
+
+    function updateMusicPlayer(elapsed:Float)
+    {
+        if (currentlyPlaying)
+        {
+            playdist = 1 - (FlxG.sound.music.time / FlxG.sound.music.length);
+            
+            // Update icon positions
+            iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - 26);
+            iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - 26);
+            
+            // Update icon states
+            if (healthBar.percent < 20)
+                iconP1.changeState('losing');
+            else
+                iconP1.changeState('normal');
+
+            if (healthBar.percent > 80)
+                iconP2.changeState('losing');
+            else
+                iconP2.changeState('normal');
+            
+            // Update time display
+            barText.text = FlxStringUtil.formatTime(FlxG.sound.music.time / 1000) + " / " + 
+                          FlxStringUtil.formatTime(FlxG.sound.music.length / 1000);
+            barText.screenCenter(X);
+            
+            // Check if song ended
+            if (FlxG.sound.music.time >= FlxG.sound.music.length - 100)
+            {
+                if (!isLooping)
+                {
+                    // Auto-advance to next song
+                    changeSelection(1);
+                    playCurrentSong();
+                }
+                else
+                {
+                    // Restart song
+                    FlxG.sound.music.time = 0;
+                    if (CurVocals != null)
+                        CurVocals.time = 0;
+                }
+            }
+        }
+
+        var upP = controls.UP_P;
+        var downP = controls.DOWN_P;
+        var leftP = controls.LEFT_P;
+        var rightP = controls.RIGHT_P;
+        var accepted = controls.ACCEPT;
+
+        if (upP)
+            changeSelection(-1);
+        if (downP)
+            changeSelection(1);
+            
+        // Seek controls
+        if (currentlyPlaying)
+        {
+            if (leftP)
+            {
+                if (CurVocals != null)
+                    CurVocals.time = Math.max(0, CurVocals.time - 5000);
+                FlxG.sound.music.time = Math.max(0, FlxG.sound.music.time - 5000);
+            }
+            if (rightP)
+            {
+                if (CurVocals != null)
+                    CurVocals.time = Math.min(CurVocals.length, CurVocals.time + 5000);
+                FlxG.sound.music.time = Math.min(FlxG.sound.music.length, FlxG.sound.music.time + 5000);
+            }
+        }
+
+        // Speed controls
+        if (FlxG.keys.justPressed.Q)
+            changeSpeed(-1);
+        if (FlxG.keys.justPressed.E)
+            changeSpeed(1);
+        if (FlxG.keys.justPressed.R)
+            resetSpeed();
+            
+        // Loop toggle
+        if (FlxG.keys.justPressed.L)
+        {
+            isLooping = !isLooping;
+            FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+            updateSongInfo();
+        }
+
+        if (accepted)
+        {
+            pauseSong();
+        }
+
+        if (controls.BACK)
+        {
+            if (currentlyPlaying)
+            {
+                stopSong();
+            }
+            else
+            {
+                exitToCategories();
+            }
+        }
+    }
+
+    function changeSpeed(change:Int)
+    {
+        currentSpeedIndex += change;
+        if (currentSpeedIndex < 0)
+            currentSpeedIndex = speedSteps.length - 1;
+        if (currentSpeedIndex >= speedSteps.length)
+            currentSpeedIndex = 0;
+            
+        playbackSpeed = speedSteps[currentSpeedIndex];
+        
+        // Only adjust time scale, not pitch
+        if (FlxG.sound.music != null)
+        {
+            var currentTime = FlxG.sound.music.time;
+            FlxG.sound.music.stop();
+            FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 1, false);
+            FlxG.sound.music.time = currentTime;
+            
+            #if (flixel >= "5.3.0")
+            FlxG.sound.music.speed = playbackSpeed;
+            #end
+        }
+        if (CurVocals != null)
+        {
+            var currentTime = CurVocals.time;
+            CurVocals.stop();
+            CurVocals = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
+            CurVocals.time = currentTime;
+            CurVocals.play();
+            FlxG.sound.list.add(CurVocals);
+            
+            #if (flixel >= "5.3.0")
+            CurVocals.speed = playbackSpeed;
+            #end
+        }
+            
+        speedText.text = "Speed: " + playbackSpeed + "x";
+        FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+    }
+
+    function resetSpeed()
+    {
+        currentSpeedIndex = 3; // 1.0x
+        playbackSpeed = 1.0;
+        
+        if (FlxG.sound.music != null)
+        {
+            var currentTime = FlxG.sound.music.time;
+            FlxG.sound.music.stop();
+            FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 1, false);
+            FlxG.sound.music.time = currentTime;
+            
+            #if (flixel >= "5.3.0")
+            FlxG.sound.music.speed = 1.0;
+            #end
+        }
+        if (CurVocals != null)
+        {
+            var currentTime = CurVocals.time;
+            CurVocals.stop();
+            CurVocals = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
+            CurVocals.time = currentTime;
+            CurVocals.play();
+            FlxG.sound.list.add(CurVocals);
+            
+            #if (flixel >= "5.3.0")
+            CurVocals.speed = 1.0;
+            #end
+        }
+            
+        speedText.text = "Speed: 1.0x";
+        FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+    }
+
+    function playCurrentSong()
+    {
+        // Stop any existing music first
+        if (FlxG.sound.music != null)
+        {
+            FlxG.sound.music.stop();
+        }
+        if (CurVocals != null)
+        {
+            CurVocals.stop();
+            FlxG.sound.list.remove(CurVocals);
+            CurVocals = null;
+        }
+        
+        currentlyPlaying = true;
+        
+        ShowBar(songs[curSelected].songCharacter);
+        updateSongInfo();
+        
+        // Load and play vocals if needed
+        if (songs[curSelected].hasVocals)
+        {
+            CurVocals = new FlxSound().loadEmbedded(Paths.voices(songs[curSelected].songName));
+            CurVocals.looped = isLooping;
+            #if (flixel >= "5.3.0")
+            CurVocals.speed = playbackSpeed;
+            #end
+            FlxG.sound.list.add(CurVocals);
+            CurVocals.play();
+        }
+        
+        // Load and play instrumental
+        FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 1, isLooping);
+        #if (flixel >= "5.3.0")
+        FlxG.sound.music.speed = playbackSpeed;
+        #end
+        
+        // Fade out song list
+        for (i in 0...grpSongs.members.length)
+        {
+            if (i != curSelected)
+                FlxTween.tween(grpSongs.members[i], {alpha: 0}, 0.15);
+        }
+        for (i in 0...iconArray.length)
+        {
+            if (i != curSelected)
+                FlxTween.tween(iconArray[i], {alpha: 0}, 0.15);
+        }
+    }
+
+    function pauseSong()
+    {
+        if (!currentlyPlaying)
+        {
+            // Resume from pause or start fresh
+            if (FlxG.sound.music != null && FlxG.sound.music.time > 0 && FlxG.sound.music.time < FlxG.sound.music.length - 100)
+            {
+                // Resume from pause
+                currentlyPlaying = true;
+                FlxG.sound.music.resume();
+                if (CurVocals != null)
+                    CurVocals.resume();
+                updateSongInfo();
+            }
+            else
+            {
+                // Start fresh
+                playCurrentSong();
+            }
+        }
+        else
+        {
+            // Pause
+            currentlyPlaying = false;
+            
+            FlxG.sound.music.pause();
+            if (CurVocals != null)
+                CurVocals.pause();
+                
+            updateSongInfo();
+        }
+    }
+
+    function stopSong()
+    {
+        currentlyPlaying = false;
+        
+        if (CurVocals != null)
+        {
+            CurVocals.stop();
+            FlxG.sound.list.remove(CurVocals);
+            CurVocals = null;
+        }
+        
+        FlxG.sound.music.stop();
+        HideBar();
+        
+        // Restore song list visibility
+        for (item in grpSongs.members)
+        {
+            FlxTween.tween(item, {alpha: item.targetY == 0 ? 1 : 0.6}, 0.15);
+        }
+        for (i in 0...iconArray.length)
+        {
+            FlxTween.tween(iconArray[i], {alpha: i == curSelected ? 1 : 0.6}, 0.15);
+        }
+        
+        updateSongInfo();
+    }
+
+    function updateSongInfo()
+    {
+        var info = songs[curSelected].songName;
+        if (!songs[curSelected].hasVocals)
+            info += " (Instrumental)";
+        info += "\nLoop: " + (isLooping ? "ON" : "OFF");
+        if (isShuffled)
+            info += " | Shuffle Mode";
+        info += " | " + (currentlyPlaying ? "PLAYING" : "PAUSED");
+        
+        songInfoText.text = info;
+    }
+
+    function exitToCategories()
+    {
+        inCategorySelect = true;
+        
+        // Reset camera follow
+        FlxG.camera.follow(camFollow, LOCKON, 0.04);
+        
+        // Hide player UI
+        FlxTween.tween(controlsText, {alpha: 0}, 0.3, {onComplete: function(tw:FlxTween)
+        {
+            controlsText.visible = false;
+        }});
+        FlxTween.tween(speedText, {alpha: 0}, 0.3, {onComplete: function(tw:FlxTween)
+        {
+            speedText.visible = false;
+        }});
+        FlxTween.tween(songInfoText, {alpha: 0}, 0.3, {onComplete: function(tw:FlxTween)
+        {
+            songInfoText.visible = false;
+        }});
+        
+        // Clear songs
+        for (i in grpSongs.members)
+        {
+            var item = i;
+            FlxTween.tween(item, {alpha: 0}, 0.3, {onComplete: function(tw:FlxTween)
+            {
+                grpSongs.remove(item);
+                item.destroy();
+            }});
+        }
+        for (i in 0...iconArray.length)
+        {
+            var icon = iconArray[i];
+            FlxTween.tween(icon, {alpha: 0}, 0.3, {onComplete: function(tw:FlxTween)
+            {
+                remove(icon);
+                icon.destroy();
+            }});
+        }
+        
+        grpSongs.clear();
+        iconArray = [];
+        songs = [];
+        
+        // Show category UI
+        new FlxTimer().start(0.3, function(tmr:FlxTimer)
+        {
+            for (icon in categoryIcons)
+            {
+                icon.visible = true;
+                FlxTween.tween(icon, {alpha: 1}, 0.3);
+            }
+            for (title in categoryTitles)
+            {
+                title.visible = true;
+                FlxTween.tween(title, {alpha: 1}, 0.3);
+            }
+            categoryText.visible = true;
+            FlxTween.tween(categoryText, {alpha: 1}, 0.3);
+            
+            shuffleText.visible = true;
+            FlxTween.tween(shuffleText, {alpha: 1}, 0.3);
+        });
+    }
+
+    function changeSelection(change:Int = 0)
+    {
+        if (currentlyPlaying && change != 0)
+        {
+            // Stop current song before changing
+            if (CurVocals != null)
+            {
+                CurVocals.stop();
+                FlxG.sound.list.remove(CurVocals);
+                CurVocals = null;
+            }
+            FlxG.sound.music.stop();
+        }
+            
+        FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+        
+        curSelected += change;
+
+        if (curSelected < 0)
+            curSelected = songs.length - 1;
+        if (curSelected >= songs.length)
+            curSelected = 0;
+
+        var bullShit:Int = 0;
+
+        for (i in 0...iconArray.length)
+        {
+            iconArray[i].alpha = (i == curSelected) ? 1 : (currentlyPlaying ? 0 : 0.6);
+        }
+
+        for (item in grpSongs.members)
+        {
+            item.targetY = bullShit - curSelected;
+            bullShit++;
+
+            item.alpha = (item.targetY == 0) ? 1 : (currentlyPlaying ? 0 : 0.6);
+        }
+        
+        if (songs[curSelected] != null)
+        {
+            var colorIndex = songs[curSelected].week % songColors.length;
+            FlxTween.color(bg, 0.25, bg.color, songColors[colorIndex]);
+        }
+        
+        if (!currentlyPlaying)
+            updateSongInfo();
+    }
+
+    function HideBar()
+    {
+        FlxTween.tween(iconP1, {alpha: 0}, 0.15);
+        FlxTween.tween(iconP2, {alpha: 0}, 0.15);
+        FlxTween.tween(barText, {alpha: 0}, 0.15);
+        FlxTween.tween(healthBar, {alpha: 0}, 0.15);
+        FlxTween.tween(healthBarBG, {alpha: 0}, 0.15);
+        
+        new FlxTimer().start(0.15, function(tmr:FlxTimer)
+        {
+            iconP1.visible = false;
+            iconP2.visible = false;
+            barText.visible = false;
+            healthBar.visible = false;
+            healthBarBG.visible = false;
+        });
+    }
+
+    function ShowBar(char:String)
+    {
+        iconP1.alpha = 0;
+        iconP2.alpha = 0;
+        barText.alpha = 0;
+        healthBar.alpha = 0;
+        healthBarBG.alpha = 0;
+        
+        iconP1.visible = true;
+        iconP2.changeIcon(char);
+        iconP2.visible = true;
+        barText.visible = true;
+        healthBar.visible = true;
+        healthBarBG.visible = true;
+        
+        FlxTween.tween(iconP1, {alpha: 1}, 0.15);
+        FlxTween.tween(iconP2, {alpha: 1}, 0.15);
+        FlxTween.tween(barText, {alpha: 1}, 0.15);
+        FlxTween.tween(healthBar, {alpha: 1}, 0.15);
+        FlxTween.tween(healthBarBG, {alpha: 1}, 0.15);
+    }
+}
+
+class PlaySongMetadata
+{
+    public var songName:String = "";
+    public var ExternalSong:Bool = false;
+    public var ShowBadIcon:Bool = false;
+    public var songCharacter:String = "";
+    public var hasVocals:Bool = true;
+    public var week:Int = 0;
+    public var category:String = "dave";
+
+    public function new(song:String, external:Bool, songCharacter:String, bad:Bool, vocal:Bool, category:String, week:Int)
+    {
+        this.songName = song;
+        this.ExternalSong = external;
+        this.songCharacter = songCharacter;
+        this.ShowBadIcon = bad;
+        this.hasVocals = vocal;
+        this.category = category;
+        this.week = week;
+    }
+}

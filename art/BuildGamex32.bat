@@ -1,3 +1,3 @@
 cd ..
-lime test windows -32
+lime build windows -32
 pause

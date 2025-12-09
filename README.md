@@ -1,7 +1,7 @@
 <img src="KadeEngineWitBackground.png" width="600" height="400">
 
 # VS LUNA (LUNA ENGINE)
-this is dave
+this is luna
 
 <img width="438" height="584" alt="image" src="https://github.com/user-attachments/assets/645c8139-fc86-46e0-ab86-451224b06074" />
 

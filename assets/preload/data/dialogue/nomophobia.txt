@@ -1,0 +1,5 @@
+:generic:after the battle with luna, you wakeup in a new, very glitchy place
+:bf,confused:where..... am i?
+:luna,nomo:............
+:bf,confused:is that luna????
+:luna,nomo:function startFlxSong-nomophobia.cpp

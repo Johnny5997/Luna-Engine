@@ -1,3 +1,0 @@
-dead 0 0
-dead confirm 0 0
-dead loop 0 0

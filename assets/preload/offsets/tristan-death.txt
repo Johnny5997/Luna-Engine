@@ -1,3 +1,0 @@
-deathConfirm 2 36
-deathLoop 1 1
-firstDeath 0 0

@@ -1,16 +1,12 @@
-:bambi,bevelmad:DUDE WHY YOU DO THAT
-:bambi,bevelmad:I GONNA BLock you...
-:bambi,bevelmad:.....
-:bambi,bevelmad:Why are you doing this to me.
-:bambi,bevelmad:Dude.
-:bambi,bevelmad:Stop.
-:bambi,bevelmad:I don't understand.
-:bambi,bevelmad:You are causing me severe psychological damage
-:bambi,bevelmad:This was supposed to be impossible!
-:bambi,bevelmad:And you just...
-:bambi,bevelmad:Played through those songs like it was nothing!
-:bf,confused:Beep
-:bambi,bevelmad:This isn't funny anymore.
-:bambi,bevelmad:My head is literally going to explode.
-:bf,confused:Boop beep skdoop
-:bambi,bevelmad:I might be able to do one more song though...
+:luna,spectre: wow.. you did good again
+:bf,happyspectre: these are toooooooo eeeaaaassssyyyyyyyyyyyyy
+:luna,spectre: FINE THEN. you want a hard song???
+:luna,dark: i l l  g i v e  y o u  a  h a r d  s o n g
+:luna,dark: s i n c e  y o u  t h i n k  u r  s o  g o o d
+:itsumispectre,confused: Luna... you can calm down
+:luna,dark: i  a m  n o t  a d d r e s s i n g  y o u                 a t  t h i s  t i m e
+:bf,confusedspectre: i didnt mean to make you angr-
+:luna,dark: Flx.blockDialogue.boyfriend.cpp
+:luna,dark: Flx.loadFromJSON.MASTER.txt
+:itsumispectre,confused: Wait luna
+:luna,dark: Flx.stopDialogue
