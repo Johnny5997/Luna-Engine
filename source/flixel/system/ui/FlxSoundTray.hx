@@ -4,12 +4,13 @@ package flixel.system.ui;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
-import flash.display.BlendMode;
 import flash.Lib;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import flixel.FlxG;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 import flixel.system.FlxAssets;
 import flixel.util.FlxColor;
 #if flash
@@ -17,39 +18,21 @@ import flash.text.AntiAliasType;
 import flash.text.GridFitType;
 #end
 
-/**
- * The flixel sound tray, the little volume meter that pops down sometimes.
- */
 class FlxSoundTray extends Sprite
 {
-	/**
-	 * Because reading any data from DisplayObject is insanely expensive in hxcpp, keep track of whether we need to update it or not.
-	 */
 	public var active:Bool;
-
-	/**
-	 * Helps us auto-hide the sound tray after a volume change.
-	 */
 	var _timer:Float;
-
-	/**
-	 * Helps display the volume bars on the sound tray.
-	 */
 	var _bars:Array<Bitmap>;
-
-	/**
-	 * How wide the sound tray background is.
-	 */
 	var _width:Int = 80;
-
 	var _defaultScale:Float = 2.0;
+	var text:TextField = new TextField();
 
-	var text:TextField = new TextField(); // I want to use this in other functions hehe --erizur
+	// Track last known volume for detecting increase/decrease
+	var _lastVolume:Float = 1.0;
 
-	/**
-	 * Sets up the "sound tray", the little volume meter that pops down sometimes.
-	 */
-	@:keep
+	// Prevent repeated bounce animations while visible
+	var _hasBounced:Bool = false;
+
 	public function new()
 	{
 		super();
@@ -57,6 +40,7 @@ class FlxSoundTray extends Sprite
 		visible = false;
 		scaleX = _defaultScale;
 		scaleY = _defaultScale;
+
 		var tmp:Bitmap = new Bitmap(new BitmapData(_width, 30, true, 0x7F000000));
 		screenCenter();
 		addChild(tmp);
@@ -71,24 +55,25 @@ class FlxSoundTray extends Sprite
 		text.embedFonts = true;
 		text.antiAliasType = AntiAliasType.NORMAL;
 		text.gridFitType = GridFitType.PIXEL;
-		#else
 		#end
+
 		var dtf:TextFormat = new TextFormat("Comic Sans MS Bold", 8, 0xffffff);
 		dtf.align = TextFormatAlign.CENTER;
 		text.defaultTextFormat = dtf;
 		addChild(text);
-		text.text = "Volume - 100%"; //HAHA! I REVERTED YOUR TEXT RAPAREP LOL! LETS GOOOO BABY
+		text.text = "Volume - 100%";
 		text.y = 14;
 
 		var bx:Int = 10;
 		var by:Int = 14;
-		_bars = new Array();
+		_bars = [];
 
 		for (i in 0...10)
 		{
 			tmp = new Bitmap(new BitmapData(4, i + 1, false, FlxColor.WHITE));
 			tmp.x = bx;
 			tmp.y = by;
+			tmp.alpha = 0.4;
 			addChild(tmp);
 			_bars.push(tmp);
 			bx += 6;
@@ -99,78 +84,114 @@ class FlxSoundTray extends Sprite
 		visible = false;
 	}
 
-	/**
-	 * This function just updates the soundtray object.
-	 */
 	public function update(MS:Float):Void
 	{
-		// Animate stupid sound tray thing
 		if (_timer > 0)
 		{
 			_timer -= MS / 1000;
 		}
-		else if (y > -height)
+		else if (y > -height && active)
 		{
-			y -= (MS / 1000) * FlxG.height * 2;
+			active = false;
+			_hasBounced = false;
 
-			if (y <= -height)
-			{
-				visible = false;
-				active = false;
-
-				// Save sound preferences
-				FlxG.save.data.mute = FlxG.sound.muted;
-				FlxG.save.data.volume = FlxG.sound.volume;
-				FlxG.save.flush();
-			}
+			// Smooth slide up (no bounce)
+			FlxTween.tween(this, { y: -height }, 0.3, { ease: FlxEase.quadInOut, type: FlxTweenType.ONESHOT });
 		}
 	}
 
-	/**
-	 * Makes the little volume tray slide out.
-	 *
-	 * @param	Silent	Whether or not it should beep.
-	 */
 	public function show(Silent:Bool = false):Void
 	{
-		if (!Silent)
-		{
-			var sound = Paths.sound("clicky", "shared");
-			if (sound != null)
-				FlxG.sound.load(sound).play();
-		}
-
-		_timer = 1;
-		y = 0;
-		visible = true;
-		active = true;
-		var globalVolume:Int = Math.round(FlxG.sound.volume * 10);
+		var currentVolume:Float = FlxG.sound.volume;
+		var globalVolume:Int = Math.round(currentVolume * 10);
 
 		if (FlxG.sound.muted)
-		{
 			globalVolume = 0;
+
+		// Play correct sound
+		if (!Silent)
+		{
+			var soundName:String = null;
+
+			if (globalVolume >= 10)
+				soundName = "clickyMax";
+			else if (currentVolume > _lastVolume)
+				soundName = "clickyUp";
+			else if (currentVolume < _lastVolume)
+				soundName = "clickyDown";
+
+			if (soundName != null)
+			{
+				var sound = Paths.sound(soundName, "shared");
+				if (sound != null)
+					FlxG.sound.load(sound).play();
+			}
 		}
 
+		_lastVolume = currentVolume;
+
+		_timer = 1;
+		visible = true;
+		active = true;
+
+		// Only bounce once per show
+		if (!_hasBounced)
+		{
+			y = -height;
+			_hasBounced = true;
+			FlxTween.tween(this, { y: 0 }, 0.7, { ease: FlxEase.elasticOut, type: FlxTweenType.ONESHOT });
+		}
+		else
+		{
+			y = 0;
+		}
+
+		// Smoothly animate bars (cancel old tweens first to prevent jitter)
 		for (i in 0..._bars.length)
 		{
-			if (i < globalVolume)
-			{
-				_bars[i].alpha = 1;
-			}
-			else
-			{
-				_bars[i].alpha = 0.4;
-			}
+			var targetAlpha:Float = (i < globalVolume) ? 1 : 0.4;
+			FlxTween.cancelTweensOf(_bars[i]);
+			FlxTween.tween(_bars[i], { alpha: targetAlpha }, 0.2, { ease: FlxEase.quadOut });
 		}
 
-		text.text = "Volume - " + globalVolume * 10 + "%";
+		// Text updates
+		if (globalVolume == 0)
+		{
+			text.text = "MUTED";
+
+			// Red flash animation
+			text.textColor = 0xFFFF0000; // bright red
+			FlxTween.cancelTweensOf(text); // prevent stacking
+			FlxTween.tween(text, { textColor: 0xFFFFFFFF }, 0.6, { ease: FlxEase.quadOut });
+		}
+		else
+		{
+			text.text = "Volume - " + globalVolume * 10 + "%";
+			text.textColor = 0xFFFFFFFF; // reset color to white
+		}
+	}
+
+	public function destroy():Void
+	{
+		// Cancel all active tweens
+		FlxTween.cancelTweensOf(this);
+    
+		for (bar in _bars)
+		{
+			FlxTween.cancelTweensOf(bar);
+		}
+    
+		FlxTween.cancelTweensOf(text);
+    
+		// Clean up references
+		_bars = null;
+		text = null;
 	}
 
 	public function screenCenter():Void
 	{
 		scaleX = _defaultScale;
 		scaleY = _defaultScale;
-
 		x = (0.5 * (Lib.current.stage.stageWidth - _width * _defaultScale) - FlxG.game.x);
 	}
 }
