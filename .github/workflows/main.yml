@@ -38,8 +38,8 @@ jobs:
           haxelib run lime setup flixel
           haxelib run lime setup
           haxelib install flixel-tools 1.5.1
-          haxelib install flixel-ui 2.3.3
-          haxelib install flixel-addons 2.11.0
+          haxelib --never install flixel-ui 2.3.3
+          haxelib --never install flixel-addons 2.11.0
           haxelib install actuate 1.9.0
           haxelib install box2d 1.2.3
           haxelib install layout 1.2.1
@@ -79,8 +79,8 @@ jobs:
           haxelib run lime setup flixel
           haxelib run lime setup
           haxelib install flixel-tools 1.5.1
-          haxelib install flixel-ui 2.3.3
-          haxelib install flixel-addons 2.11.0
+          haxelib --never install flixel-ui 2.3.3
+          haxelib --never install flixel-addons 2.11.0
           haxelib install actuate 1.9.0
           haxelib install box2d 1.2.3
           haxelib install layout 1.2.1
@@ -121,8 +121,8 @@ jobs:
           haxelib run lime setup flixel
           haxelib run lime setup
           haxelib install flixel-tools 1.5.1
-          haxelib install flixel-ui 2.3.3
-          haxelib install flixel-addons 2.11.0
+          haxelib --never install flixel-ui 2.3.3
+          haxelib --never install flixel-addons 2.11.0
           haxelib install actuate 1.9.0
           haxelib install box2d 1.2.3
           haxelib install layout 1.2.1
