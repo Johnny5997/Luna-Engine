@@ -1,5 +1,3 @@
-# THE FOLLOWING ACTIONS CODE IS FROM THE PSYCH ENGINE REPO: https://github.com/ShadowMario/FNF-PsychEngine/blob/main/.github/workflows/main.yml
-
 name: Build
 
 # Controls when the action will run.
@@ -33,27 +31,23 @@ jobs:
         run: |
           sudo apt-get install libvlc-dev libvlccore-dev vlc glibc-source libidn-dev libidn12
           haxelib setup ~/haxelib
-          haxelib install hxcpp > /dev/null
-          haxelib install lime
-          haxelib install openfl
-          haxelib --never install flixel
+          haxelib install hxcpp 4.3.2 > /dev/null
+          haxelib install lime 8.2.2
+          haxelib install openfl 9.4.1
+          haxelib --never install flixel 4.10.0
           haxelib run lime setup flixel
           haxelib run lime setup
-          haxelib install flixel-tools
-          haxelib install flixel-ui
-          haxelib install flixel-addons
-          haxelib install tjson
-          haxelib install hxjsonast
-          haxelib install hxCodec
-          haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
-          haxelib install hscript
-          haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
-          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git hxvm-luajit https://github.com/nebulazorua/hxvm-luajit
-          haxelib git faxe https://github.com/uhrobots/faxe
-          haxelib git polymod https://github.com/MasterEric/polymod.git
+          haxelib install flixel-tools 1.5.1
+          haxelib install flixel-ui 2.3.3
+          haxelib install flixel-addons 2.11.0
+          haxelib install actuate 1.9.0
+          haxelib install box2d 1.2.3
+          haxelib install layout 1.2.1
+          haxelib install systools 1.1.0
+          haxelib install hscript 2.6.0
           haxelib git hxCodec https://github.com/polybiusproxy/hxCodec
-          haxelib install hxcpp-debug-server
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib git polymod https://github.com/MasterEric/polymod.git
           haxelib list
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
@@ -78,27 +72,23 @@ jobs:
       - name: Install Haxelib
         run: |
           haxelib setup C:/haxelib
-          haxelib install hxcpp > nul
-          haxelib install lime
-          haxelib install openfl
-          haxelib --never install flixel
+          haxelib install hxcpp 4.3.2 > nul
+          haxelib install lime 8.2.2
+          haxelib install openfl 9.4.1
+          haxelib --never install flixel 4.10.0
           haxelib run lime setup flixel
           haxelib run lime setup
-          haxelib install flixel-tools
-          haxelib install flixel-ui
-          haxelib install flixel-addons
-          haxelib install tjson
-          haxelib install hxjsonast
-          haxelib install hxCodec
-          haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
-          haxelib install hscript
-          haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
-          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git hxvm-luajit https://github.com/nebulazorua/hxvm-luajit
-          haxelib git faxe https://github.com/uhrobots/faxe
-          haxelib git polymod https://github.com/MasterEric/polymod.git
+          haxelib install flixel-tools 1.5.1
+          haxelib install flixel-ui 2.3.3
+          haxelib install flixel-addons 2.11.0
+          haxelib install actuate 1.9.0
+          haxelib install box2d 1.2.3
+          haxelib install layout 1.2.1
+          haxelib install systools 1.1.0
+          haxelib install hscript 2.6.0
           haxelib git hxCodec https://github.com/polybiusproxy/hxCodec
-          haxelib install hxcpp-debug-server
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib git polymod https://github.com/MasterEric/polymod.git
           haxelib list
         shell: cmd
       - name: Create Version Tag
@@ -124,27 +114,23 @@ jobs:
       - name: Install Haxelib
         run: |
           haxelib setup ~/haxelib
-          haxelib install hxcpp > /dev/null
-          haxelib install lime
-          haxelib install openfl
-          haxelib --never install flixel
+          haxelib install hxcpp 4.3.2 > /dev/null
+          haxelib install lime 8.2.2
+          haxelib install openfl 9.4.1
+          haxelib --never install flixel 4.10.0
           haxelib run lime setup flixel
           haxelib run lime setup
-          haxelib install flixel-tools
-          haxelib install flixel-ui
-          haxelib install flixel-addons
-          haxelib install tjson
-          haxelib install hxjsonast
-          haxelib install hxCodec
-          haxelib git linc_luajit https://github.com/nebulazorua/linc_luajit
-          haxelib install hscript
-          haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
-          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
-          haxelib git hxvm-luajit https://github.com/nebulazorua/hxvm-luajit
-          haxelib git faxe https://github.com/uhrobots/faxe
-          haxelib git polymod https://github.com/MasterEric/polymod.git
+          haxelib install flixel-tools 1.5.1
+          haxelib install flixel-ui 2.3.3
+          haxelib install flixel-addons 2.11.0
+          haxelib install actuate 1.9.0
+          haxelib install box2d 1.2.3
+          haxelib install layout 1.2.1
+          haxelib install systools 1.1.0
+          haxelib install hscript 2.6.0
           haxelib git hxCodec https://github.com/polybiusproxy/hxCodec
-          haxelib install hxcpp-debug-server
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib git polymod https://github.com/MasterEric/polymod.git
           haxelib list
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
