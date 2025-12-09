@@ -14,11 +14,40 @@ class KeybindPrefs
 		'right'	   => [D, RIGHT],
 		'accept'		=> [SPACE, ENTER],
 		'key5'		=> [SPACE, SHIFT],
+		'center'		=> [SPACE, SHIFT],
 		'back'	   => [BACKSPACE, ESCAPE],
 		'pause'		=> [ENTER, ESCAPE],
-		'reset'		=> [R, DELETE]
+		'reset'		=> [R, DELETE],
+		'lefta1'		=> [S, NONE],
+		'upa'		=> [D, NONE],
+		'righta1'		=> [F, NONE],
+		'centera'		=> [SPACE, NONE],
+		'lefta2'		=> [J, LEFT],
+		'downa'		=> [K, DOWN],
+		'righta2'		=> [L, RIGHT],
+		'leftb1'		=> [A, NONE],
+		'downb1'		=> [S, NONE],
+		'upb1'		   => [D, NONE],
+		'rightb1'	   => [F, NONE],
+		'centerb'		=> [SPACE, NONE],
+		'leftb2'		=> [H, NONE],
+		'downb2'		=> [J, NONE],
+		'upb2'		   => [K, NONE],
+		'rightb2'	   => [L, NONE],
+		'leftc1'		=> [A, NONE],
+		'downc1'		=> [S, NONE],
+		'upc1'		   => [D, NONE],
+		'rightc1'	   => [F, NONE],
+		'leftc2'		=> [C, NONE],
+		'downc2'		=> [V, NONE],
+		'upc2'		   => [B, NONE],
+		'rightc2'	   => [N, NONE],
+		'leftc3'		=> [J, NONE],
+		'downc3'		=> [K, NONE],
+		'upc3'		   => [L, NONE],
+		'rightc3'	   => [SEMICOLON, NONE]
 	];
-	public static var controlNames:Array<String> = ['left', 'down', 'up', 'right', 'key5', 'accept', 'back', 'pause', 'reset'];
+	public static var controlNames:Array<String> = ['left', 'down', 'up', 'right', 'key5', 'accept', 'back', 'pause', 'reset', 'lefta1', 'upa', 'righta1', 'centera', 'lefta2', 'downa', 'righta2', 'leftb1', 'downb1', 'upb1', 'rightb1', 'centerb', 'leftb2', 'downb2', 'upb2', 'rightb2', 'leftc1', 'downc1', 'upc1', 'rightc1', 'leftc2', 'downc2', 'upc2', 'rightc2', 'leftc3', 'downc3', 'upc3', 'rightc3'];
 
 	public static function saveControls()
 	{

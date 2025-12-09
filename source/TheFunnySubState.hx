@@ -28,6 +28,9 @@ class TheFunnySubState extends MusicBeatSubstate
 			case 'bf-pixel':
 				daBf = "bf-pixel-dead";
 				deathSuffix = '-pixel';
+			case 'itsumi-pixel':
+				daBf = "itsumi-pixel";
+				deathSuffix = '-pixel';
 			case 'dave' | 'dave-recursed' | 'dave-fnaf':
 				deathSuffix = '-dave';
 			case 'tristan':

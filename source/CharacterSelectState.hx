@@ -23,7 +23,7 @@ import lime.app.Application;
 import sys.FileSystem;
 #end
 
- /**
+/**
 	hey you fun commiting people, 
 	i don't know about the rest of the mod but since this is basically 99% my code 
 	i do not give you guys permission to grab this specific code and re-use it in your own mods without asking me first.
@@ -43,6 +43,7 @@ class CharacterInSelect
 		this.forms = forms;
 	}
 }
+
 class CharacterForm
 {
 	public var name:String;
@@ -58,6 +59,7 @@ class CharacterForm
 		this.noteMs = noteMs;
 	}
 }
+
 class CharacterSelectState extends MusicBeatState
 {
 	public var char:Boyfriend;
@@ -68,25 +70,17 @@ class CharacterSelectState extends MusicBeatState
 	public var wasInFullscreen:Bool;
 	
 	public var funnyIconMan:HealthIcon;
-
 	var strummies:FlxTypedGroup<FlxSprite>;
-
 	var notestuffs:Array<String> = ['LEFT', 'DOWN', 'UP', 'RIGHT'];
-
 	public var isDebug:Bool = false;
-
 	public var PressedTheFunny:Bool = false;
-
 	var selectedCharacter:Bool = false;
 
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
 	private var camTransition:FlxCamera;
-
 	var currentSelectedCharacter:CharacterInSelect;
-
 	var noteMsTexts:FlxTypedGroup<FlxText> = new FlxTypedGroup<FlxText>();
-
 	var arrows:Array<FlxSprite> = [];
 	var basePosition:FlxPoint;
 	
@@ -96,36 +90,51 @@ class CharacterSelectState extends MusicBeatState
 			new CharacterForm('bf', 'Boyfriend', [1,1,1,1]),
 			new CharacterForm('bf-pixel', 'Pixel Boyfriend', [1,1,1,1])
 		]),
-		new CharacterInSelect('dave', [0.25, 0.25, 2, 2], [
-			new CharacterForm('dave', 'Dave', [0.25, 0.25, 2, 2]),
+		new CharacterInSelect('luna', [1, 1, 1, 1], [
+			new CharacterForm('luna', 'Luna', [1,1,1,1]),
+			new CharacterForm('lunamad', 'Luna Mad', [1,1,1,1]),
+			new CharacterForm('lunafinal', 'Luna Final', [1,1,1,1])
 		]),
-		new CharacterInSelect('bambi', [0, 0, 3, 0], [
-			new CharacterForm('bambi-new', 'Bambi', [0, 0, 3, 0]),
+		new CharacterInSelect('puda', [1, 1, 1, 1], [
+			new CharacterForm('puda', 'Puda', [1,1,1,1])
 		]),
-		new CharacterInSelect('tristan', [2, 0.5, 0.5, 0.5], [
-			new CharacterForm('tristan', 'Tristan', [2, 0.5, 0.5, 0.5]),
+		new CharacterInSelect('itsumi', [1, 1, 1, 1], [
+			new CharacterForm('itsumi', 'Itsumi', [1,1,1,1]),
+			new CharacterForm('itsumi-pixel', 'Pixel Itsumi', [1,1,1,1])
 		]),
-		new CharacterInSelect('tristan-golden', [0.25, 0.25, 0.25, 2], [
-			new CharacterForm('tristan-golden', 'Golden Tristan', [0.25, 0.25, 0.25, 2])
+		new CharacterInSelect('alls', [1, 1, 1, 1], [
+			new CharacterForm('alls', 'Alls', [1,1,1,1])
 		]),
-		new CharacterInSelect('dave-angey', [2, 2, 0.25, 0.25], [
-			new CharacterForm('dave-angey', '3D Dave', [2, 2, 0.25, 0.25], '3D')
-		]),
-		new CharacterInSelect('bambi-3d', [0, 3, 0, 0], [
-			new CharacterForm('bambi-3d', 'Expunged', [0, 3, 0, 0], '3D'),
+		new CharacterInSelect('noahreal', [1, 1, 1, 1], [
+			new CharacterForm('noahreal', 'Noah', [1,1,1,1])
 		])
 	];
+
 	#if SHADERS_ENABLED
 	var bgShader:Shaders.GlitchEffect;
 	#end
+
 	public function new() 
 	{
 		super();
 	}
-	
+
 	override public function create():Void 
 	{
-		if (PlayState.SONG.song.toLowerCase() == 'exploitation')
+		// === NEW CODE FOR ROSES ===
+		if (PlayState.SONG.song.toLowerCase() == "roses")
+		{
+			characters = [
+				new CharacterInSelect('bf', [1, 1, 1, 1], [
+					new CharacterForm('bf-pixel', 'Pixel Boyfriend', [1,1,1,1])
+				]),
+				new CharacterInSelect('itsumi', [1, 1, 1, 1], [
+					new CharacterForm('itsumi-pixel', 'Pixel Itsumi', [1,1,1,1])
+				])
+			];
+		}
+
+		if (PlayState.SONG.song.toLowerCase() == 'darkness')
 		{
 			if (FlxG.fullscreen)
 			{
@@ -156,63 +165,40 @@ class CharacterSelectState extends MusicBeatState
 		}
 		currentSelectedCharacter = characters[current];
 
-		if (PlayState.SONG.song.toLowerCase() == "exploitation")
+		if (PlayState.SONG.song.toLowerCase() == "darkness")
 			FlxG.sound.playMusic(Paths.music("badEnding"), 1, true);
 		else
 			FlxG.sound.playMusic(Paths.music("goodEnding"), 1, true);
 
 		//create BG
-
-		var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('backgrounds/shared/sky_night'));
+		var bg:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('backgrounds/void/lunasky'));
+		bgShader = new Shaders.GlitchEffect();
+		bgShader.waveAmplitude = 0.1;
+		bgShader.waveFrequency = 5;
+		bgShader.waveSpeed = 2;
 		bg.antialiasing = true;
 		bg.scrollFactor.set(0.75, 0.75);
 		bg.active = false;
+		bg.shader = bgShader.shader;
 		
-		if (PlayState.SONG.song.toLowerCase() == "exploitation")
+		if (PlayState.SONG.song.toLowerCase() == "darkness")
 		{
-			bg.loadGraphic(Paths.image('backgrounds/void/redsky', 'shared'));
-			
+			bg.loadGraphic(Paths.image('backgrounds/void/exploit/creepyRoom', 'shared'));
 			#if SHADERS_ENABLED
 			bgShader = new Shaders.GlitchEffect();
 			bgShader.waveAmplitude = 0.1;
 			bgShader.waveFrequency = 5;
 			bgShader.waveSpeed = 2;
-			
 			bg.shader = bgShader.shader;
 			#end
 		}
 		add(bg);
 
-		var hills:BGSprite = new BGSprite('hills', -133, 52, Paths.image('backgrounds/charSelect/hills'), null, 1, 1);
-		add(hills);
-
-		var house:BGSprite = new BGSprite('house', 385, 78, Paths.image('backgrounds/charSelect/house'), null, 1, 1);
+		var house:BGSprite = new BGSprite('house', 385, 78, Paths.image('backgrounds/charSelect/housee'), null, 1, 1);
 		add(house);
-
-		var behindGrass:BGSprite = new BGSprite('behindGrass', -33, 468, Paths.image('backgrounds/charSelect/behindGrass'), null, 1, 1);
-		add(behindGrass);
-
-		var gateLeft:BGSprite = new BGSprite('gateLeft', -38, 464, Paths.image('backgrounds/charSelect/gateLeft'), null, 1, 1);
-		add(gateLeft);
-
-		var gateRight:BGSprite = new BGSprite('gateRight', 1014, 464, Paths.image('backgrounds/charSelect/gateRight'), null, 1, 1);
-		add(gateRight);
-		
-		var grass:BGSprite = new BGSprite('grass', -80, 385, Paths.image('backgrounds/charSelect/grass'), null, 1, 1);
-		add(grass);
-		
-		var frontGrass:BGSprite = new BGSprite('frontGrass', -185, 382, Paths.image('backgrounds/charSelect/frontGrass'), null, 1, 1);
-		add(frontGrass);
 		
 		var varientColor = 0xFF878787;
-		
-		frontGrass.color = varientColor;
-		hills.color = varientColor;
 		house.color = varientColor;
-		behindGrass.color = varientColor;
-		gateLeft.color = varientColor;
-		gateRight.color = varientColor;
-		grass.color = varientColor;
 
 		char = new Boyfriend(FlxG.width / 2, FlxG.height / 2, 'bf');
 		char.cameras = [camHUD];
@@ -220,13 +206,11 @@ class CharacterSelectState extends MusicBeatState
 		add(char);
 
 		basePosition = char.getPosition();
-
 		strummies = new FlxTypedGroup<FlxSprite>();
 		strummies.cameras = [camHUD];
-		
 		add(strummies);
 		generateStaticArrows(false);
-		
+
 		notemodtext = new FlxText((FlxG.width / 3.5) + 80, FlxG.height, 0, "1.00x       1.00x        1.00x       1.00x", 30);
 		notemodtext.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 		notemodtext.scrollFactor.set();
@@ -235,7 +219,7 @@ class CharacterSelectState extends MusicBeatState
 		FlxTween.tween(notemodtext, {y: notemodtext.y + 10, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * 0)});
 		notemodtext.cameras = [camHUD];
 		add(notemodtext);
-		
+
 		characterText = new FlxText((FlxG.width / 9) - 50, (FlxG.height / 8) - 225, "Boyfriend");
 		characterText.font = 'Comic Sans MS Bold';
 		characterText.setFormat(Paths.font("comic.ttf"), 90, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -247,7 +231,7 @@ class CharacterSelectState extends MusicBeatState
 		characterText.antialiasing = true;
 		characterText.y = FlxG.height - 180;
 		add(characterText);
-		
+
 		var resetText = new FlxText(FlxG.width, FlxG.height, LanguageManager.getTextString('character_reset'));
 		resetText.setFormat(Paths.font("comic.ttf"), 30, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		resetText.autoSize = false;
@@ -290,7 +274,6 @@ class CharacterSelectState extends MusicBeatState
 		add(arrowRight);
 
 		super.create();
-
 		Transition.nextCamera = camTransition;
 	}
 
@@ -387,7 +370,6 @@ class CharacterSelectState extends MusicBeatState
 			LoadingState.loadAndSwitchState(new FreeplayState());
 		}
 
-		#if debug
 		if (FlxG.keys.justPressed.SEVEN)
 		{
 			for (character in characters)
@@ -398,7 +380,6 @@ class CharacterSelectState extends MusicBeatState
 				}
 			}
 		}
-		#end
 		
 		for (i in 0...controlSet.length)
 		{
@@ -516,6 +497,14 @@ class CharacterSelectState extends MusicBeatState
 		FlxG.save.data.charactersUnlocked = new Array<String>();
 		unlockCharacter('bf');
 		unlockCharacter('bf-pixel');
+		unlockCharacter('luna');
+		unlockCharacter('lunamad');
+		unlockCharacter('lunafinal');
+		unlockCharacter('puda');
+		unlockCharacter('itsumi');
+		unlockCharacter('itsumi-pixel');
+		unlockCharacter('alls');
+		unlockCharacter('noahreal');
 		FlxG.save.flush();
 	}
 
@@ -538,13 +527,20 @@ class CharacterSelectState extends MusicBeatState
 		
 		switch (char.curCharacter)
 		{
-			case 'bambi-new':
-				char.x -= 30;
 			case 'bambi-3d':
 				char.x -= 150;
 				char.y += 100;
+			case 'luna':
+				char.y += -240;
+			case 'lunamad':
+				char.y += -240;
+			case 'lunafinal':
+				char.y += -240;
+			case 'puda':
+				char.y += -240;
+			case 'alls':
+				char.y += -240;
 		}
-		
 		insert(members.indexOf(strummies), char);
 		funnyIconMan.changeIcon(char.curCharacter);
 		funnyIconMan.color = FlxColor.WHITE;
@@ -582,12 +578,12 @@ class CharacterSelectState extends MusicBeatState
 		PlayState.formoverride = currentSelectedCharacter.forms[curForm].name;
 		PlayState.curmult = currentSelectedCharacter.forms[curForm].noteMs;
 
-		if (PlayState.SONG.song.toLowerCase() == "exploitation")
+		if (PlayState.SONG.song.toLowerCase() == "noah-the-pinecone")
 		{
 			FlxG.fullscreen = false;
 			FlxG.sound.play(Paths.sound('error'), 0.9);
 
-			PlatformUtil.sendFakeMsgBox("Null Object Reference");
+			PlatformUtil.sendFakeMsgBox("Pinecone");
 		}
 		if (FlxTransitionableState.skipNextTransIn)
 		{

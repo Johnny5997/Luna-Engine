@@ -36,62 +36,71 @@ class CreditsPopUp extends FlxSpriteGroup
 
 		switch (PlayState.SONG.song.toLowerCase())
 		{
-			case 'warmup' | 'house' | 'insanity' | 'polygonized' | 'bonus-song' | 'blocked' | 'corn-theft' | 'maze' | 'indignancy' |  'splitathon' | 'shredder' | 'greetings' |
-				'interdimensional' | 'cheating' | 'escape-from-california' | 'five-nights' | 'kabunga' | 'secret' | 'unfairness' | 'rano' | 'master':
+			case 'blocked' | 'shredder' | 'interdimensional' | 'cheating' | 'unfairness' | 'master':
 				songCreator = 'MoldyGH';
-			case 'exploitation':
-				songCreator = 'Oxygen';
-			case 'memory' | 'mealie':
-				songCreator = 'Alexander Cooper 19';
-			case 'glitch':
-				songCreator = 'DeadShadow & PixelGH\nRemix by MoldyGH';
-				songCreatorIcon = 'DeadShadow & PixelGH';
-			case 'overdrive':
-				songCreator = 'Top 10 Awesome';
-			case 'supernovae':
-				songCreator = 'ArchWk\nRemix by MoldyGH';
-				songCreatorIcon = 'ArchWk';
-			case 'vs-dave-rap' | 'vs-dave-rap-two':
-				songCreator = 'Your mom';
-			case 'recursed':
-				songCreator = 'Aadsta';
-			case 'adventure':
-				songCreator = 'Ruby';
-			case 'bot-trot':
-				songCreator = 'TH3R34LD34L';
+			case 'fatalistic' | 'darkness':
+				songCreator = 'Hortas\nRemixed by Johnny5997';
+				songCreatorIcon = 'HortasDuel';
+			case 'alls-world':
+				songCreator = 'Johnny5997\nSounds from Instagran\nVocals by Alls';
+				songCreatorIcon = 'AllsWorldCredit';
+			case 'noah-the-pinecone':
+				songCreator = 'Johnny5997\nVocals by Noah';
+				songCreatorIcon = 'NoahDuel';
 			case 'roofs':
 				songCreator = 'sibottle';
+			case 'warmup' | 'luna' | 'treats' | 'scratch' | 'lunacone' | 'action' | 'action-two' | 'nomophobia' | 'lost' | 'kys' | 'lunatopia' | 'the-biggest-bird' | 'lunas-arcade' | 'puda' | 'wow-two' | 'luna-in-among-us' | 'vs-luna-christmas' | 'vs-luna-free-trial' | 'shipped-my-pants' | 'entity' | 'sunshine' | 'wheels' | 'milky-way' | 'luna-the-slave' | 'kalampokiphobia' | 'unethical' | 'yarn':
+				songCreator = 'Johnny5997';
+			case 'roses':
+				songCreator = 'Johnny5997';
+				songCreatorIcon = 'Johnny5997pixel';
+			case 'stereo-madness' | 'dead-zoee':
+				songCreator = 'Noah';
+			case 'recursed' | 'heart-of-gold' | 'apprentice' | 'cuberoot' | 'tessattack':
+				songCreator = 'Aadsta';
+			case 'meow':
+				songCreator = 'Ruby';
+			case 'disoriented' | 'heavenly' | 'septuagint' | 'clamorous' | 'psychosis':
+				songCreator = 'Hortas';
+			case 'galactic':
+				songCreator = 'Cynda';
+			case 'opposition':
+				songCreator = 'Maevings';
+			case 'love-songs':
+				songCreator = 'Kaash Paige';
+			case 'obama':
+				songCreator = '4k Funny';
+			case 'i-would-roast-you-but-my-mom-said-im-not-allowed-to-burn-trash':
+				songCreator = 'Instagram';
 		}
 		switch (PlayState.storyWeek)
 		{
 			case 0 | 1:
-				headingPath = {path: 'songHeadings/daveHeading', antiAliasing: false, iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
 			case 2:
-				headingPath = {path: 'songHeadings/bambiHeading', antiAliasing: true, iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
 			case 3:
-				headingPath = {path: 'songHeadings/splitathonHeading', antiAliasing: false, iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
 			case 4:
-				headingPath = {path: 'songHeadings/festivalHeading', antiAliasing: true, iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
 			case 5:
-				headingPath = {path: 'songHeadings/bevelHeading', antiAliasing: false, iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
 			case 6:
-				headingPath = {path: 'songHeadings/kabungaHeading', antiAliasing: true, iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
 			case 7:
 				headingPath = {path: 'songHeadings/secretLeakHeading', antiAliasing: true, iconOffset: 3};
 			case 8:
-				headingPath = {path: 'songHeadings/tristanHeading', antiAliasing: true, iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
 			case 9:
-				headingPath = {path: 'songHeadings/botHeading', antiAliasing: true,
-				animation: new Animation('botTrot', 'Bot trot', 24, true, [false, false]), iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeadingPixel', antiAliasing: false, iconOffset: 0};
 			case 10:
 				headingPath = {path: 'songHeadings/recursedHeading', antiAliasing: true, iconOffset: 5};
 			case 11:
-				headingPath = {path: 'songHeadings/californiaHeading', antiAliasing: true,
-				animation: new Animation('california', 'California', 24, true, [false, false]), iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
 			case 12:
-				headingPath = {path: 'songHeadings/fnafHeading', antiAliasing: true, iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
 			case 13:
-				headingPath = {path: 'songHeadings/fnfengeading', antiAliasing: false, iconOffset: 0};
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
 			case 14:
 				headingPath = {path: 'songHeadings/cheatingHeading', antiAliasing: true,
 				animation: new Animation('cheating', 'Cheating', 24, true, [false, false]), iconOffset: 0};
@@ -101,11 +110,29 @@ class CreditsPopUp extends FlxSpriteGroup
 			case 16:
 				headingPath = {path: 'songHeadings/expungedHeading', antiAliasing: true,
 				animation: new Animation('expunged', 'Expunged', 24, true, [false, false]), iconOffset: 0};
+			case 18:
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
+			case 19:
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
+			case 20:
+				headingPath = {path: 'songHeadings/hortas/septuagintHeading', antiAliasing: true,
+				animation: new Animation('septuagint', 'Septuagint', 24, true, [false, false]), iconOffset: 0};
+			case 21:
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
+			case 22:
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
+			case 23:
+				headingPath = {path: 'songHeadings/spectreHeading', antiAliasing: false, iconOffset: 0};
+			case 24:
+				headingPath = {path: 'songHeadings/spectreHeading', antiAliasing: false, iconOffset: 0};
+			case 25:
+				headingPath = {path: 'songHeadings/lunaHeading', antiAliasing: false, iconOffset: 0};
+			case 26:
+				headingPath = {path: 'songHeadings/virusHeading', antiAliasing: true,
+				animation: new Animation('virus', 'Virus', 24, true, [false, false]), iconOffset: 0};
 		}
 		switch (PlayState.SONG.song.toLowerCase())
 		{
-			case 'polygonized':
-				headingPath = {path: 'songHeadings/3D-daveHeading', antiAliasing: false, iconOffset: 0};
 			case 'interdimensional':
 				headingPath = {path: 'songHeadings/interdimensionalHeading', antiAliasing: false, iconOffset: 0};
 		}

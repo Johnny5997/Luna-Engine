@@ -25,13 +25,21 @@ import flixel.util.FlxColor;
 import lime.app.Application;
 import flixel.addons.display.FlxBackdrop;
 import flixel.input.keyboard.FlxKey;
+import flixel.ui.FlxButton;
+import flixel.util.FlxTimer;
 #if desktop
 import Discord.DiscordClient;
 #end
 
 import flixel.system.FlxSound;
+import sys.io.File;
+import sys.FileSystem;
 
 using StringTools;
+
+var sevenPressCount:Int = 0;
+var popupGroup:FlxSpriteGroup;
+var inputField:FlxInputText;
 
 class MainMenuState extends MusicBeatState
 {
@@ -45,6 +53,7 @@ class MainMenuState extends MusicBeatState
 		'credits',
 		'ost',
 		'options',
+		'changelog',
 		'discord'
 	];
 
@@ -55,6 +64,7 @@ class MainMenuState extends MusicBeatState
 		'main_credits',
 		'main_ost',
 		'main_options',
+		'main_changelog',
 		'main_discord'
 	];
 
@@ -65,6 +75,7 @@ class MainMenuState extends MusicBeatState
 		'desc_credits',
 		'desc_ost',
 		'desc_options',
+		'desc_changelog',
 		'desc_discord'
 	];
 
@@ -72,17 +83,18 @@ class MainMenuState extends MusicBeatState
 
 	public static var finishedFunnyMove:Bool = false;
 
-	public static var daRealEngineVer:String = 'Dave';
-	public static var engineVer:String = '3.0b';
+	public static var daRealEngineVer:String = 'Luna';
+	public static var engineVer:String = '1.0 Beta 8';
 
 	public static var engineVers:Array<String> = 
 	[
-		'Dave', 
-		'Bambi', 
-		'Tristan'
+		'Luna', 
+		'Puda', 
+		'Mittens',
+		'Alls'
 	];
 
-	public static var kadeEngineVer:String = "DAVE";
+	public static var kadeEngineVer:String = "LUNA";
 	public static var gameVer:String = "0.2.7.1";
 	
 	var bg:FlxSprite;
@@ -91,28 +103,7 @@ class MainMenuState extends MusicBeatState
 	var bigIcons:FlxSprite;
 	var camFollow:FlxObject;
 	public static var bgPaths:Array<String> = [
-		'Aadsta',
-		'ArtiztGmer',
-		'DeltaKastel',
-		'DeltaKastel2',
-		'DeltaKastel3',
-		'DeltaKastel4',
-		'DeltaKastel5',
-		'diamond man',
-		'Jukebox',
-		'kiazu',
-		'Lancey',
-		'mamakotomi',
-		'mantis',
-		'mepperpint',
-		'morie',
-		'neon',
-		'Onuko',
-		'ps',
-		'ricee_png',
-		'sk0rbias',
-		'SwagnotrllyTheMod',
-		'zombought',
+		'Johnny5997',
 	];
 
 	var logoBl:FlxSprite;
@@ -135,9 +126,49 @@ class MainMenuState extends MusicBeatState
 		awaitingExploitation = (FlxG.save.data.exploitationState == 'awaiting');
 		if (!FlxG.sound.music.playing)
 		{
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+		    if (FlxG.save.data.altMenuMusic == 1) // FreakierMenu
+		    {
+		        FlxG.sound.playMusic(Paths.music('freakierMenu'), 0);
+		        Conductor.changeBPM(135);
+		    }
+		    else if (FlxG.save.data.altMenuMusic == 2) // NoahEngine
+		    {
+		        FlxG.sound.playMusic(Paths.music('noahEngine'), 0);
+		        Conductor.changeBPM(102);
+		    }
+		    else if (FlxG.save.data.altMenuMusic == 3) // Pinecone
+		    {
+		        FlxG.sound.playMusic(Paths.music('pinecone'), 0);
+		        Conductor.changeBPM(293);
+		    }
+		    else if (FlxG.save.data.altMenuMusic == 4) // Playstation
+		    {
+		        FlxG.sound.playMusic(Paths.music('playstation'), 0);
+		        Conductor.changeBPM(121);
+		    }
+		    else if (FlxG.save.data.altMenuMusic == 5) // Love Songs
+		    {
+		        FlxG.sound.playMusic(Paths.music('loveSongs'), 0);
+		        Conductor.changeBPM(120);
+		    }
+		    else if (FlxG.save.data.altMenuMusic == 6) // Jacobs Ladder
+		    {
+		        FlxG.sound.playMusic(Paths.music('jacobsLadder'), 0);
+		        Conductor.changeBPM(146);
+		    }
+		    else if (FlxG.save.data.altMenuMusic == 7) // Diddy Blud
+		    {
+		        FlxG.sound.playMusic(Paths.music('diddyBlud'), 0);
+		        Conductor.changeBPM(184);
+		    }
+		    else // FreakyMenu (default)
+		    {
+		        FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+		        Conductor.changeBPM(150);
+		    }
 		}
 		persistentUpdate = persistentDraw = true;
+
 
 		#if desktop
 		DiscordClient.changePresence("In the Menus", null);
@@ -159,13 +190,12 @@ class MainMenuState extends MusicBeatState
 			bg.antialiasing = false;
 			bg.color = FlxColor.multiply(bg.color, FlxColor.fromRGB(50, 50, 50));
 			add(bg);
-			
+
 			#if SHADERS_ENABLED
 			voidShader = new Shaders.GlitchEffect();
 			voidShader.waveAmplitude = 0.1;
 			voidShader.waveFrequency = 5;
 			voidShader.waveSpeed = 2;
-			
 			bg.shader = voidShader.shader;
 			#end
 
@@ -182,25 +212,77 @@ class MainMenuState extends MusicBeatState
 		}
 		else
 		{
-			bg = new FlxSprite(-80).loadGraphic(randomizeBG());
-			bg.scrollFactor.set();
-			bg.setGraphicSize(Std.int(bg.width * 1.1));
-			bg.updateHitbox();
-			bg.screenCenter();
-			bg.antialiasing = true;
-			bg.color = 0xFFFDE871;
+			switch(FlxG.save.data.mainMenuBG)
+			{
+				case 0: // Luna
+					bg = new FlxSprite(-500, -300).loadGraphic(Paths.image('backgrounds/void/mainmenubg', 'shared'));
+					#if SHADERS_ENABLED
+					voidShader = new Shaders.GlitchEffect();
+					voidShader.waveAmplitude = 0.1;
+					voidShader.waveFrequency = 5;
+					voidShader.waveSpeed = 2;
+					bg.shader = voidShader.shader;
+					#end
+
+				case 1: // Pinecone
+					bg = new FlxSprite(-500, -300).loadGraphic(Paths.image('backgrounds/void/mainmenu/pineconemenubg', 'shared'));
+					// no shader here
+
+					magenta = new FlxSprite(-500, -300).loadGraphic(bg.graphic);
+					magenta.scrollFactor.set();
+					magenta.antialiasing = false;
+					magenta.visible = false;
+					magenta.color = FlxColor.multiply(0xFFfd719b, FlxColor.fromRGB(200, 200, 200));
+					add(magenta);
+
+				case 2: // House
+					bg = new FlxSprite(0, 0).loadGraphic(Paths.image('backgrounds/void/mainmenu/house', 'shared'));
+					// no shader here
+
+					magenta = new FlxSprite(0, 0).loadGraphic(bg.graphic);
+					magenta.scrollFactor.set();
+					magenta.antialiasing = false;
+					magenta.visible = false;
+					magenta.color = FlxColor.multiply(0xFFfd719b, FlxColor.fromRGB(200, 200, 200));
+					add(magenta);
+
+				case 3: // Tessattack
+					bg = new FlxSprite(-500, -300).loadGraphic(Paths.image('backgrounds/void/tessattack', 'shared'));
+					#if SHADERS_ENABLED
+					voidShader = new Shaders.GlitchEffect();
+					voidShader.waveAmplitude = 0.1;
+					voidShader.waveFrequency = 5;
+					voidShader.waveSpeed = 2;
+					bg.shader = voidShader.shader;
+					#end
+
+				case 4: // Golden Void
+					bg = new FlxSprite(-500, -300).loadGraphic(Paths.image('backgrounds/void/golden_void', 'shared'));
+					#if SHADERS_ENABLED
+					voidShader = new Shaders.GlitchEffect();
+					voidShader.waveAmplitude = 0.1;
+					voidShader.waveFrequency = 5;
+					voidShader.waveSpeed = 2;
+					bg.shader = voidShader.shader;
+					#end
+
+				case 5: // Kade Engine
+					bg = new FlxSprite(0, 0).loadGraphic(Paths.image('backgrounds/void/mainmenu/kade', 'shared'));
+					// no shader here
+
+					magenta = new FlxSprite(0, 0).loadGraphic(bg.graphic);
+					magenta.scrollFactor.set();
+					magenta.antialiasing = false;
+					magenta.visible = false;
+					magenta.color = FlxColor.multiply(0xFFfd719b, FlxColor.fromRGB(200, 200, 200));
+					add(magenta);
+			}
+
+			bg.scrollFactor.set(0, 0.2);
+			bg.antialiasing = false;
 			add(bg);
-	
-			magenta = new FlxSprite(-80).loadGraphic(bg.graphic);
-			magenta.scrollFactor.set();
-			magenta.setGraphicSize(Std.int(magenta.width * 1.1));
-			magenta.updateHitbox();
-			magenta.screenCenter();
-			magenta.visible = false;
-			magenta.antialiasing = true;
-			magenta.color = 0xFFfd719b;
-			add(magenta);
 		}
+
 		selectUi = new FlxSprite(0, 0).loadGraphic(Paths.image('mainMenu/Select_Thing', 'preload'));
 		selectUi.scrollFactor.set(0, 0);
 		selectUi.antialiasing = true;
@@ -268,7 +350,7 @@ class MainMenuState extends MusicBeatState
 			menuItem.scrollFactor.set(0, 1);
 			if (firstStart)
 			{
-				FlxTween.tween(menuItem, {x: FlxG.width / 2 - 450 + (i * 160)}, 1 + (i * 0.25), {
+				FlxTween.tween(menuItem, {x: FlxG.width / 2 - 542 + (i * 160)}, 1 + (i * 0.25), {
 					ease: FlxEase.expoInOut,
 					onComplete: function(flxTween:FlxTween)
 					{
@@ -281,14 +363,14 @@ class MainMenuState extends MusicBeatState
 			else
 			{
 				//menuItem.screenCenter(Y);
-				menuItem.x = FlxG.width / 2 - 450 + (i * 160);
+				menuItem.x = FlxG.width / 2 - 542 + (i * 160);
 				changeItem();
 			}
 		}
 
 		firstStart = false;
 
-		var versionShit:FlxText = new FlxText(1, FlxG.height - 25, 0, '${daRealEngineVer} Engine v${engineVer}\nFNF v${gameVer}', 12);
+		var versionShit:FlxText = new FlxText(1, FlxG.height - 50, 0, '${daRealEngineVer} Engine v${engineVer}\nKade Engine v1.2\n', 12);
 		versionShit.antialiasing = true;
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("Comic Sans MS Bold", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -296,7 +378,7 @@ class MainMenuState extends MusicBeatState
 
 		var pressR:FlxText = new FlxText(150, 10, 0, LanguageManager.getTextString("main_resetdata"), 12);
 		pressR.setFormat("Comic Sans MS Bold", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		pressR.x -= versionShit.textField.textWidth;
+		pressR.x += 900;
 		pressR.antialiasing = true;
 		pressR.alpha = 0;
 		pressR.scrollFactor.set();
@@ -337,8 +419,16 @@ class MainMenuState extends MusicBeatState
 				deathSound.loadEmbedded(Paths.soundRandom('missnote', 1, 3));
 				deathSound.volume = FlxG.random.float(0.6, 1);
 				deathSound.play();
-				
+		
 				FlxG.camera.shake(0.05, 0.1);
+
+				sevenPressCount++;
+
+				if (sevenPressCount >= 10)
+				{
+					sevenPressCount = 0;
+					showSecretPopup();
+				}
 			}
 			if (FlxG.keys.justPressed.R)
 			{
@@ -403,69 +493,332 @@ class MainMenuState extends MusicBeatState
 
 			if (controls.BACK)
 			{
+				FlxG.sound.play(Paths.sound('cancelMenu'));
 				FlxG.switchState(new TitleState());
 			}
 
-			if (controls.ACCEPT)
+		if (controls.ACCEPT)
+		{
+			if (optionShit[curSelected] == 'discord' || optionShit[curSelected] == 'merch')
 			{
-				if (optionShit[curSelected] == 'discord' || optionShit[curSelected] == 'merch')
+				switch (optionShit[curSelected])
 				{
-					switch (optionShit[curSelected])
-					{
-						case 'discord':
-							fancyOpenURL("https://www.discord.gg/vsdave");
-					}
+					case 'discord':
+						fancyOpenURL("https://www.discord.gg/vsdave");
 				}
-				else
+			}
+			else
+			{
+				selectedSomethin = true;
+				// select sound
+				FlxG.sound.play(Paths.sound('confirmMenu'));
+
+				menuItems.forEach(function(spr:FlxSprite)
 				{
-					selectedSomethin = true;
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-
-					FlxFlicker.flicker(magenta, 1.1, 0.15, false);
-
-					menuItems.forEach(function(spr:FlxSprite)
+					if (curSelected != spr.ID)
 					{
-						if (curSelected != spr.ID)
-						{
-							FlxTween.tween(spr, {alpha: 0}, 1.3, {
-								ease: FlxEase.quadOut,
-								onComplete: function(twn:FlxTween)
-								{
-									spr.kill();
-								}
-							});
-						}
-						else
-						{
-							FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
+						FlxTween.tween(spr, {alpha: 0}, 1.3, {
+							ease: FlxEase.quadOut,
+							onComplete: function(twn:FlxTween)
 							{
-								var daChoice:String = optionShit[curSelected];
-								switch (daChoice)
+								spr.kill();
+							}
+						});
+					}
+					else
+					{
+						// Zoom animation
+						FlxTween.tween(spr.scale, {x: spr.scale.x * 1.3, y: spr.scale.y * 1.3}, 0.4, {
+							ease: FlxEase.quadOut,
+							onComplete: function(twn:FlxTween)
+							{
+								// After zoom finishes, flicker and switch
+								FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
 								{
-									case 'story mode':
-										FlxG.switchState(new StoryMenuState());
-									case 'freeplay' | 'freeplay glitch':
-										if (FlxG.random.bool(0.05))
-										{
-											fancyOpenURL("https://www.youtube.com/watch?v=Z7wWa1G9_30%22");
-										}
-										FlxG.switchState(new FreeplayState());
-									case 'options':
-										FlxG.switchState(new OptionsMenu());
-									case 'ost':
-										FlxG.switchState(new MusicPlayerState());
-									case 'credits':
-										FlxG.switchState(new CreditsMenuState());
-								}
-							});
-						}
-					});
-				}
+									var daChoice:String = optionShit[curSelected];
+									switch (daChoice)
+									{
+										case 'story mode':
+											FlxG.switchState(new StoryMenuState());
+										case 'freeplay' | 'freeplay glitch':
+											if (FlxG.random.bool(0.05))
+											{
+												fancyOpenURL("https://www.youtube.com/watch?v=Z7wWa1G9_30%22");
+											}
+											FlxG.switchState(new FreeplayState());
+										case 'options':
+											FlxG.switchState(new OptionsMenu());
+										case 'changelog':
+											FlxG.switchState(new ChangelogState());
+										case 'ost':
+											FlxG.switchState(new MusicPlayerState());
+										case 'credits':
+											FlxG.switchState(new CreditsMenuState());
+									}
+								});
+							}
+						});
+					}
+				});
+			}
 			}
 		}
 
 		super.update(elapsed);
 
+	}
+
+	function showSecretPopup()
+	{
+		if (popupGroup != null && popupGroup.exists)
+			return; // Prevent duplicates
+
+		canInteract = false;
+		FlxG.mouse.visible = true;
+
+		popupGroup = new FlxSpriteGroup();
+
+		// darken background slightly
+		var darkBG = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xAA000000);
+		popupGroup.add(darkBG);
+
+		// popup box
+		var box = new FlxSprite(FlxG.width / 2 - 150, FlxG.height / 2 - 100).makeGraphic(300, 200, 0xFF222222);
+		box.scrollFactor.set();
+		popupGroup.add(box);
+
+		// title text
+		var title = new FlxText(box.x, box.y + 15, 300, "Enter Code", 16);
+		title.setFormat(null, 16, 0xFFFFFFFF, "center");
+		popupGroup.add(title);
+
+		// subtext
+		var subtext = new FlxText(box.x, box.y + 40, 300, "you're not supposed to be here", 12);
+		subtext.setFormat(null, 12, 0xFFAAAAAA, "center");
+		popupGroup.add(subtext);
+
+		// input field
+		inputField = new FlxInputText(box.x + 25, box.y + 80, 250, "", 8);
+		inputField.hasFocus = true;
+		popupGroup.add(inputField);
+
+		// ok button
+		var okButton = new FlxButton(box.x + 40, box.y + 130, "OK", function() {
+			var upperCode = inputField.text.toUpperCase();
+			
+			if (upperCode == "FIGHTINGCANCER")
+			{
+				closePopup();
+				FlxG.sound.music.stop();
+				canInteract = true;
+				FlxG.switchState(new ImageState());
+			}
+			else if (upperCode == "LUNAVURFORSALE")
+			{
+				closePopup();
+				triggerRecursedUnlock();
+			}
+		});
+		okButton.setGraphicSize(70, 25);
+		okButton.updateHitbox();
+		popupGroup.add(okButton);
+
+		// cancel button
+		var cancelButton = new FlxButton(box.x + 160, box.y + 130, "Cancel", function() {
+			canInteract = true;
+			closePopup();
+		});
+		cancelButton.setGraphicSize(70, 25);
+		cancelButton.updateHitbox();
+		popupGroup.add(cancelButton);
+
+		add(popupGroup);
+		FlxTween.tween(popupGroup, { alpha: 1 }, 0.3, { ease: FlxEase.quadOut });
+	}
+
+	function closePopup()
+	{
+		if (popupGroup != null)
+		{
+			remove(popupGroup);
+			popupGroup.destroy();
+			popupGroup = null;
+			FlxG.mouse.visible = false;
+		}
+	}
+
+	function triggerRecursedUnlock()
+	{
+		canInteract = false;
+
+		FlxG.sound.music.stop();
+		FlxG.sound.playMusic(Paths.sound('recursed/rumbleLong', 'shared'), 0.8, false, null);
+		var boom = new FlxSound().loadEmbedded(Paths.sound('recursed/boom', 'shared'), false, false);
+
+		FlxG.camera.shake(0.015, 6.5, function()
+		{
+			FlxG.camera.flash();
+			
+			// Change Windows desktop wallpaper to DARKABYSS
+			#if windows
+			try
+			{
+				var gameDir = Sys.getCwd();
+				var wallpaperPath = gameDir + 'assets\\shared\\images\\backgrounds\\void\\DARKABYSS.png';
+				
+				// Ensure the file exists
+				if (FileSystem.exists(wallpaperPath))
+				{
+					trace('Setting wallpaper to: ' + wallpaperPath);
+					
+					// Method 1: Registry + Update
+					Sys.command('reg add "HKEY_CURRENT_USER\\Control Panel\\Desktop" /v Wallpaper /t REG_SZ /d "' + wallpaperPath + '" /f');
+					Sys.command('reg add "HKEY_CURRENT_USER\\Control Panel\\Desktop" /v WallpaperStyle /t REG_SZ /d "10" /f');
+					Sys.command('reg add "HKEY_CURRENT_USER\\Control Panel\\Desktop" /v TileWallpaper /t REG_SZ /d "0" /f');
+					Sys.command('RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters ,1 ,True');
+					
+					// Method 2: SystemParametersInfo via command
+					Sys.command('powershell.exe -Command "& {Add-Type -TypeDefinition \'using System;using System.Runtime.InteropServices;public class Wallpaper{[DllImport(\\\"user32.dll\\\", CharSet=CharSet.Auto)]public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);}\' ; [Wallpaper]::SystemParametersInfo(20, 0, \\"' + wallpaperPath + '\\", 3)}"');
+				}
+				else
+				{
+					trace('Wallpaper file not found at: ' + wallpaperPath);
+				}
+			}
+			catch (e:Dynamic)
+			{
+				trace('Failed to change wallpaper: ' + e);
+			}
+			#end
+			
+			var objects:Array<FlxSprite> = new Array<FlxSprite>();
+			
+			// Change menu icons to virus versions
+			var virusTex = Paths.getSparrowAtlas('ui/main_menu_icons_virus');
+			for (item in menuItems)
+			{
+				item.frames = virusTex;
+				var currentOptionShit = optionShit[item.ID];
+				item.animation.addByPrefix('idle', (currentOptionShit == 'freeplay glitch' ? 'freeplay' : currentOptionShit) + " basic", 24);
+				item.animation.addByPrefix('selected', (currentOptionShit == 'freeplay glitch' ? 'freeplay' : currentOptionShit) + " white", 24);
+				item.animation.play('idle');
+			}
+			
+			// Change big icons to virus version
+			if (bigIcons != null)
+			{
+				bigIcons.frames = Paths.getSparrowAtlas('ui/menu_big_icons_virus');
+				for (i in 0...optionShit.length)
+				{
+					bigIcons.animation.addByPrefix(optionShit[i], optionShit[i] == 'freeplay' ? 'freeplay0' : optionShit[i], 24);
+				}
+				bigIcons.animation.play(optionShit[curSelected]);
+			}
+			
+			// Add all menu items to the chaos
+			for (item in menuItems)
+			{
+				item.screenCenter();
+				objects.push(item);
+				item.velocity.set(new FlxRandom().float(-300, 400), new FlxRandom().float(-200, 400));
+				item.angularVelocity = 60;
+			}
+
+			// Add UI elements
+			if (selectUi != null)
+			{
+				selectUi.screenCenter();
+				objects.push(selectUi);
+				selectUi.velocity.set(new FlxRandom().float(-300, 400), new FlxRandom().float(-200, 400));
+				selectUi.angularVelocity = 60;
+			}
+
+			if (bigIcons != null)
+			{
+				bigIcons.screenCenter();
+				objects.push(bigIcons);
+				bigIcons.velocity.set(new FlxRandom().float(-300, 400), new FlxRandom().float(-200, 400));
+				bigIcons.angularVelocity = 60;
+			}
+
+			if (curOptText != null)
+			{
+				curOptText.screenCenter();
+				objects.push(curOptText);
+				curOptText.velocity.set(new FlxRandom().float(-100, 250), new FlxRandom().float(-100, 250));
+				curOptText.angularVelocity = 80;
+			}
+
+			if (curOptDesc != null)
+			{
+				curOptDesc.screenCenter();
+				objects.push(curOptDesc);
+				curOptDesc.velocity.set(new FlxRandom().float(-100, 250), new FlxRandom().float(-100, 250));
+				curOptDesc.angularVelocity = 80;
+			}
+
+			// Add background to the chaos
+			if (bg != null)
+			{
+				bg.screenCenter();
+				objects.push(bg);
+				bg.velocity.set(new FlxRandom().float(-200, 300), new FlxRandom().float(-150, 300));
+				bg.angularVelocity = 40;
+			}
+
+			// Add magenta background if it exists
+			if (magenta != null)
+			{
+				magenta.screenCenter();
+				objects.push(magenta);
+				magenta.velocity.set(new FlxRandom().float(-200, 300), new FlxRandom().float(-150, 300));
+				magenta.angularVelocity = 40;
+			}
+
+			boom.play();
+			FlxG.sound.music.stop();
+			FlxG.sound.playMusic(Paths.sound('recursed/ambience', 'shared'), 1, false, null);
+
+			// Change background to DARKABYSS
+			bg.loadGraphic(Paths.image('backgrounds/void/DARKABYSS', 'shared'));
+			bg.color = FlxColor.WHITE;
+			
+			new FlxTimer().start(4, function(timer:FlxTimer)
+			{
+				for (object in objects)
+				{
+					object.angularVelocity = 0;
+					object.velocity.set();
+					FlxTween.tween(object, {x: (FlxG.width / 2) - (object.width / 2), y: (FlxG.height / 2) - (object.height / 2)}, 1, {ease: FlxEase.backOut});
+				}
+				FlxG.camera.shake(0.05, 3);
+				
+				FlxG.sound.music.stop();
+				FlxG.sound.playMusic(Paths.sound('recursed/rumble', 'shared'), 0.8, false, null);
+				FlxG.sound.play(Paths.sound('recursed/piecedTogether', 'shared'), 1, false, null, true);
+
+				FlxG.camera.fade(FlxColor.WHITE, 3, false, function() 
+				{
+					FlxG.camera.shake(0.1, 0.5);
+					FlxG.camera.fade(FlxColor.BLACK, 0);
+
+					FlxG.sound.play(Paths.sound('recursed/recurser_laugh', 'shared'), function()
+					{
+						new FlxTimer().start(1, function(timer:FlxTimer)
+						{
+							PlayState.SONG = Song.loadFromJson("luna-virus");
+							PlayState.storyWeek = 16;
+							PlayState.formoverride = 'none';
+
+							FlxG.save.data.recursedUnlocked = true;
+							FlxG.save.flush();
+
+							LoadingState.loadAndSwitchState(new PlayState());
+						});
+					});
+				});
+			});
+		});
 	}
 
 	override function beatHit()
@@ -538,6 +891,14 @@ class MainMenuState extends MusicBeatState
 
 		CharacterSelectState.unlockCharacter('bf');
 		CharacterSelectState.unlockCharacter('bf-pixel');
+		CharacterSelectState.unlockCharacter('luna');
+		CharacterSelectState.unlockCharacter('lunamad');
+		CharacterSelectState.unlockCharacter('lunafinal');
+		CharacterSelectState.unlockCharacter('puda');
+		CharacterSelectState.unlockCharacter('itsumi');
+		CharacterSelectState.unlockCharacter('itsumi-pixel');
+		CharacterSelectState.unlockCharacter('alls');
+		CharacterSelectState.unlockCharacter('noahreal');
 
 		FlxG.switchState(new StartStateSelector());
 	}

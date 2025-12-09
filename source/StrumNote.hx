@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxSprite;
+import PlayState;
 
 class StrumNote extends FlxSprite
 {
@@ -23,6 +24,16 @@ class StrumNote extends FlxSprite
 				frames = Paths.getSparrowAtlas('notes/NOTE_assets_3D');
 			case 'top10awesome':
 				frames = Paths.getSparrowAtlas('notes/OMGtop10awesomehi');
+			case 'halloweennotes':
+				frames = Paths.getSparrowAtlas('notes/halloweennotes');
+			case 'goldnotes':
+				frames = Paths.getSparrowAtlas('notes/goldnotes');
+			case 'tessattacknotes':
+				frames = Paths.getSparrowAtlas('notes/tessattacknotes');
+			case 'pixelnotes':
+				frames = Paths.getSparrowAtlas('notes/pixelnotes');
+			case 'spectrenotes':
+				frames = Paths.getSparrowAtlas('notes/spectrenotes');
 			case 'gh':
 				frames = Paths.getSparrowAtlas('notes/NOTEGH_assets');
 			case 'shape':
@@ -68,31 +79,36 @@ class StrumNote extends FlxSprite
 				animation.addByPrefix('blue', 'arrowDOWN');
 				animation.addByPrefix('purple', 'arrowLEFT');
 				animation.addByPrefix('red', 'arrowRIGHT');
-				switch (Math.abs(strumID))
+
+				var nSuf:Array<String> = ['LEFT0', 'DOWN0', 'UP0', 'RIGHT0'];
+				var pPre:Array<String> = ['left', 'down', 'up', 'right'];
+				switch (PlayState.SONG.mania)
 				{
-					case 0:
-						animation.addByPrefix('static', 'arrowLEFT');
-						animation.addByPrefix('pressed', 'left press', 24, false);
-						animation.addByPrefix('confirm', 'left confirm', 24, false);
 					case 1:
-						animation.addByPrefix('static', 'arrowDOWN');
-						animation.addByPrefix('pressed', 'down press', 24, false);
-						animation.addByPrefix('confirm', 'down confirm', 24, false);
+						nSuf = ['LEFT0', 'DOWN0', 'SPACE', 'UP0', 'RIGHT0'];
+						pPre = ['left', 'down', 'white', 'up', 'right'];
 					case 2:
-						animation.addByPrefix('static', 'arrowUP');
-						animation.addByPrefix('pressed', 'up press', 24, false);
-						animation.addByPrefix('confirm', 'up confirm', 24, false);
+						nSuf = ['LEFT0', 'UP0', 'RIGHT0', 'LEFT0', 'DOWN0', 'RIGHT0'];
+						pPre = ['left', 'up', 'right', 'yel', 'down', 'dark'];
 					case 3:
-						animation.addByPrefix('static', 'arrowRIGHT');
-						animation.addByPrefix('pressed', 'right press', 24, false);
-						animation.addByPrefix('confirm', 'right confirm', 24, false);
+						nSuf = ['LEFT0', 'UP0', 'RIGHT0', 'SPACE', 'LEFT0', 'DOWN0', 'RIGHT0'];
+						pPre = ['left', 'up', 'right', 'white', 'yel', 'down', 'dark'];
+					case 4:
+						nSuf = ['LEFT0', 'DOWN0', 'UP0', 'RIGHT0', 'SPACE', 'LEFT0', 'DOWN0', 'UP0', 'RIGHT0'];
+						pPre = ['left', 'down', 'up', 'right', 'white', 'yel', 'violet', 'black', 'dark'];
+					case 5:
+						nSuf = ['LEFT0', 'DOWN0', 'UP0', 'RIGHT0', 'LEFTSHARP', 'DOWNSHARP', 'UPSHARP', 'RIGHTSHARP', 'LEFT0', 'DOWN0', 'UP0', 'RIGHT0'];
+						pPre = ['left', 'down', 'up', 'right', 'pink', 'turq', 'emerald', 'lightred', 'yel', 'violet', 'black', 'dark'];
 				}
+				animation.addByPrefix('static', 'arrow' + nSuf[strumID]);
+				animation.addByPrefix('pressed', pPre[strumID] + ' press', 24, false);
+				animation.addByPrefix('confirm', pPre[strumID] + ' confirm', 24, false);
 		}
-		animation.play('static');
+		playAnim('static');
 
 		antialiasing = type != '3D';
 
-		setGraphicSize(Std.int(width * 0.7));
+		setGraphicSize(Std.int(width * (type == 'gh' ? 0.7 : Note.noteSize)));
 		updateHitbox();
 
 		scrollFactor.set();
@@ -110,5 +126,14 @@ class StrumNote extends FlxSprite
 	public function centerStrum()
 	{
 		x = baseX + 320 * (playerStrum ? -1 : 1) + 78 / 4;
+	}
+    public function playAnim(anim:String, ?force:Bool = false) {
+        animation.play(anim, force);
+        updateHitbox();
+        offset.x = frameWidth / 2;
+        offset.y = frameHeight / 2;
+
+        offset.x -= 156 * Note.scales[PlayState.SONG.mania] / 2;
+        offset.y -= 156 * Note.scales[PlayState.SONG.mania] / 2;
 	}
 }

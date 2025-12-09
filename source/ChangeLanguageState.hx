@@ -26,46 +26,60 @@ class ChangeLanguageState extends MusicBeatState
    var languageTextGroup:FlxTypedGroup<FlxText> = new FlxTypedGroup<FlxText>();
    var selectedLanguage:Bool = false;
 
-   override function create()
-	{
-	   languages = LanguageManager.getLanguages();
-      add(languageTextGroup);
+   var bgShader:Shaders.GlitchEffect;
 
-      var menuBG:FlxSprite = new FlxSprite();
-      menuBG.color = 0xFFea71fd;
-      menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
-      menuBG.updateHitbox();
-      menuBG.antialiasing = true;
-      menuBG.loadGraphic(MainMenuState.randomizeBG());
-      add(menuBG);
+override function create()
+{
+    languages = LanguageManager.getLanguages();
+    add(languageTextGroup);
 
-	   var helper:FlxText = new FlxText(0, 150, FlxG.width, "Select a language", 40);
-      helper.setFormat("Comic Sans MS Bold", 60, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-      helper.antialiasing = true;
-      helper.borderSize = 3;
-	   helper.screenCenter(X);
-      add(helper);
-      
-      for (i in 0...languages.length)
-      {
-         var curLanguage = languages[i];
+    // Wavy background
+    var menuBG:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('backgrounds/void/mainmenubg', 'shared'));
+    menuBG.scrollFactor.set();
+    menuBG.antialiasing = false;
+    add(menuBG);
 
-         var text:FlxText = new FlxText(0, 350 + (i * 75), FlxG.width, curLanguage.langaugeName, 40);
-         text.setFormat("Comic Sans MS Bold", 30, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE);
-         text.antialiasing = true;
-         text.screenCenter(X);
-         add(text);
-         languageTextGroup.add(text);
+    #if SHADERS_ENABLED
+    bgShader = new Shaders.GlitchEffect();
+    bgShader.waveAmplitude = 0.1;
+    bgShader.waveFrequency = 5;
+    bgShader.waveSpeed = 2;
+    menuBG.shader = bgShader.shader;
+    #end
 
-         changeTextState(text, i == currentLanguage ? true : false);
-      }
+    var helper:FlxText = new FlxText(0, 150, FlxG.width, "Select a language", 40);
+    helper.setFormat("Comic Sans MS Bold", 60, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+    helper.antialiasing = true;
+    helper.borderSize = 3;
+    helper.screenCenter(X);
+    add(helper);
+    
+    for (i in 0...languages.length)
+    {
+        var curLanguage = languages[i];
 
-		super.create();
-	}
+        var text:FlxText = new FlxText(0, 350 + (i * 75), FlxG.width, curLanguage.langaugeName, 40);
+        text.setFormat("Comic Sans MS Bold", 30, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE);
+        text.antialiasing = true;
+        text.screenCenter(X);
+        add(text);
+        languageTextGroup.add(text);
+
+        changeTextState(text, i == currentLanguage ? true : false);
+    }
+
+    super.create();
+}
+
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+    #if SHADERS_ENABLED
+    if (bgShader != null)
+        bgShader.update(elapsed); // advances wave animation
+    #end
 
       if (!selectedLanguage)
       {
@@ -87,6 +101,7 @@ class ChangeLanguageState extends MusicBeatState
 			}
          if (controls.BACK)
          {
+			FlxG.sound.play(Paths.sound('cancelMenu'));
             FlxG.switchState(new OptionsMenu());
          }
       }

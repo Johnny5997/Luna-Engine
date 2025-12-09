@@ -61,5 +61,14 @@ class SaveDataHandler
 		
 		if (FlxG.save.data.songBarOption == null)
 			FlxG.save.data.songBarOption = 'ShowTime';
+
+		if (FlxG.save.data.altMenuMusic == null) 
+			FlxG.save.data.altMenuMusic = 0;
+
+		if (FlxG.save.data.mainMenuBG == null) 
+			FlxG.save.data.mainMenuBG = 0;
+
+		if (FlxG.save.data.scorePopups == null)
+			FlxG.save.data.scorePopups = true;
     }
 }

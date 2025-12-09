@@ -1,4 +1,5 @@
 import flixel.math.FlxMath;
+import flixel.math.FlxMath;
 import flixel.group.FlxGroup;
 import sys.io.File;
 import lime.app.Application;
@@ -14,6 +15,7 @@ import flixel.*;
 import flixel.util.FlxTimer;
 import flash.system.System;
 import flixel.system.FlxSound;
+import flixel.util.FlxColor;
 
 using StringTools;
 
@@ -111,7 +113,18 @@ class TerminalState extends MusicBeatState
         CommandList.push(new TerminalCommand("characters", LanguageManager.getTerminalString("term_char_ins"), function(arguments:Array<String>)
         {
             UpdatePreviousText(false); //resets the text
-            UpdateText("\ndave.dat\nbambi.dat\ntristan.dat\nexpunged.dat\nexbungo.dat\nrecurser.dat\nmoldy.dat");
+            UpdateText("\nluna.dat\nalls.dat\nlunafinal.dat\nlunatrueform.dat");
+        }));
+        CommandList.push(new TerminalCommand("iwouldroastyoubutmymomsaidimnotallowedtoburntrash", LanguageManager.getTerminalString("term_burn_trash"), function(arguments:Array<String>)
+        {
+                            UpdatePreviousText(false); //resets the text
+                            UpdateText(LanguageManager.getTerminalString("term_god"));
+		                  	FlxG.save.data.burntrashFound = true;
+	        				PlayState.SONG = Song.loadFromJson("i-would-roast-you-but-my-mom-said-im-not-allowed-to-burn-trash"); // fuck is that
+                            PlayState.SONG.validScore = false;
+                            PlayState.SONG.player2 = "alls";
+                            Main.fps.visible = !FlxG.save.data.disableFps;
+                            LoadingState.loadAndSwitchState(new PlayState());
         }));
         CommandList.push(new TerminalCommand("admin", LanguageManager.getTerminalString("term_admin_ins"), function(arguments:Array<String>)
         {
@@ -136,50 +149,76 @@ class TerminalState extends MusicBeatState
                         default:
                             UpdatePreviousText(false); //resets the text
                             UpdateText("\n" + arguments[1] + LanguageManager.getTerminalString("term_grant_error1"));
-                        case "dave.dat":
+                        case "luna.dat":
                             UpdatePreviousText(false); //resets the text
                             UpdateText(LanguageManager.getTerminalString("term_loading"));
                             PlayState.globalFunny = CharacterFunnyEffect.Dave;
-                            PlayState.SONG = Song.loadFromJson("house");
+                            PlayState.SONG = Song.loadFromJson("luna");
                             PlayState.SONG.validScore = false;
                             Main.fps.visible = !FlxG.save.data.disableFps;
                             LoadingState.loadAndSwitchState(new PlayState());
-                        case "tristan.dat":
+
+                        case "alls.dat":
+                            UpdatePreviousText(false); //resets the text
+
+                            expungedActivated = true;
+    
+                            // First phase: "GOD IS COMING" message
+                            UpdateText("GOD IS COMING");
+                            FlxG.sound.play(Paths.sound('GODISCOMING'));
+    
+                            // Create a timer for the 57-second red screen transition
+                            var redIntensity:Float = 0;
+                            var elapsedTime:Float = 0;
+                            var transitionDuration:Float = 57;
+                            var maxAlpha:Float = 0.60;
+    
+                            // Create a red overlay sprite
+                            var redOverlay = new FlxSprite(0, 0);
+                            redOverlay.makeGraphic(FlxG.width, FlxG.height, FlxColor.RED);
+                            redOverlay.alpha = 0;
+                            add(redOverlay);
+    
+                            // Timer to gradually increase red over 57 seconds
+                            new FlxTimer().start(0.1, function(tmr:FlxTimer) {
+                                elapsedTime += 0.1;
+                                redOverlay.alpha = (elapsedTime / transitionDuration) * maxAlpha;
+        
+                                if (elapsedTime >= transitionDuration) {
+                                    tmr.cancel();
+            
+                                    // Second phase: "GOD IS HERE" message after 57 seconds
+                                    UpdateText("GOD IS HERE");
+            
+                                    // Wait 10 seconds before loading the song
+                                    new FlxTimer().start(10, function(finalTimer:FlxTimer) {
+                                        FlxG.save.data.exbungoFound = true;
+                                        PlayState.SONG = Song.loadFromJson("blocked");
+                                        PlayState.SONG.validScore = false;
+                                        PlayState.SONG.player2 = "alls";
+                                        Main.fps.visible = !FlxG.save.data.disableFps;
+                                        LoadingState.loadAndSwitchState(new PlayState());
+                                    });
+                                }
+                            }, 0); // 0 means repeat indefinitely until cancelled
+
+                        case "lunatheslave.dat":
                             UpdatePreviousText(false); //resets the text
                             UpdateText(LanguageManager.getTerminalString("term_loading"));
-                            PlayState.globalFunny = CharacterFunnyEffect.Tristan;
-                            PlayState.SONG = Song.loadFromJson("house");
+		                  	FlxG.save.data.slaveFound = true;
+	        				PlayState.SONG = Song.loadFromJson("luna-the-slave"); // SLAVE
                             PlayState.SONG.validScore = false;
+                            PlayState.SONG.player2 = "lunaslave";
                             Main.fps.visible = !FlxG.save.data.disableFps;
                             LoadingState.loadAndSwitchState(new PlayState());
-                        case "exbungo.dat":
-                            UpdatePreviousText(false); //resets the text
-                            UpdateText(LanguageManager.getTerminalString("term_loading"));
-                            PlayState.globalFunny = CharacterFunnyEffect.Exbungo;
-                            var funny:Array<String> = ["house","insanity","polygonized","five-nights","splitathon","shredder"];
-                            var funnylol:Int = FlxG.random.int(0, funny.length - 1);
-                            PlayState.SONG = Song.loadFromJson(funny[funnylol]);
-                            PlayState.SONG.validScore = false;
-                            PlayState.SONG.player2 = "exbungo";
-                            Main.fps.visible = !FlxG.save.data.disableFps;
-                            LoadingState.loadAndSwitchState(new PlayState());
-                        case "bambi.dat":
+                        case "lunafinal.dat":
                             UpdatePreviousText(false); //resets the text
                             UpdateText(LanguageManager.getTerminalString("term_loading"));
                             PlayState.globalFunny = CharacterFunnyEffect.Bambi;
-                            PlayState.SONG = Song.loadFromJson('shredder');
+                            PlayState.SONG = Song.loadFromJson('fatalistic');
                             PlayState.SONG.validScore = false;
                             LoadingState.loadAndSwitchState(new PlayState());
-                        case "recurser.dat":
-                            UpdatePreviousText(false); //resets the text
-                            UpdateText(LanguageManager.getTerminalString("term_loading"));
-                            PlayState.globalFunny = CharacterFunnyEffect.Recurser;
-                            PlayState.SONG = Song.loadFromJson('polygonized');
-                            PlayState.SONG.validScore = false;
-                            PlayState.SONG.stage = "house-night";
-                            PlayState.SONG.player2 = 'dave-annoyed';
-                            LoadingState.loadAndSwitchState(new PlayState());
-                        case "expunged.dat":
+                        case "lunatrueform.dat":
                             UpdatePreviousText(false); //resets the text
                             UpdateText(LanguageManager.getTerminalString("term_loading"));
                             expungedActivated = true;
@@ -187,15 +226,7 @@ class TerminalState extends MusicBeatState
                             {   
                                 expungedReignStarts();
                             });
-                        case "moldy.dat":
-                            UpdatePreviousText(false); //resets the text
-                            UpdateText(LanguageManager.getTerminalString("term_moldy_error"));
-                            new FlxTimer().start(2, function(timer:FlxTimer)
-                            {
-                                fancyOpenURL("https://www.youtube.com/watch?v=azMGySH8fK8");
-                                System.exit(0);
-                            });
-                    }
+                   }
                 }
                 else
                 {
@@ -206,7 +237,6 @@ class TerminalState extends MusicBeatState
         CommandList.push(new TerminalCommand("clear", LanguageManager.getTerminalString("term_clear_ins"), function(arguments:Array<String>)
         {
             previousText = "> ";
-            displayText.y = 0;
             UpdateText("");
         }));
         CommandList.push(new TerminalCommand("open", LanguageManager.getTerminalString("term_texts_ins"), function(arguments:Array<String>)
@@ -217,94 +247,32 @@ class TerminalState extends MusicBeatState
             {
                 default:
                     tx = "File not found.";
-                case "dave":
-                    tx = "Forever lost and adrift.\nTrying to change his destiny.\nDespite this, it pulls him by a lead.\nIt doesn't matter to him though.\nHe has a child to feed.";
-                case "bambi":
-                    tx = "A forgotten GOD.\nThe truth will never be known.\nThe extent of his POWERs won't ever unfold.";
-                case "god" | "artifact1":
-                    tx = "Artifact 1:\nA stone with symbols and writing carved into it.\nDescription:Its a figure that has hundreds of EYEs all across its body.\nNotes: Why does it look so much like Bambi?";
-                case "eye":
-                    tx = "Our LORD told us that he would remove one of his eyes everyday.\nHe tells me that he's doing this to save us.\nThat he might one day become unreasonable and we need to have faith in ourselves.\n...\nPlease, I promise you that's what he said. I-I'm not lying.\nDon't hurt me.";
-                case "lord":
-                    tx = "A being of many eyes. A being so wise. He gives it all up to ensure, that the golden one will have a bright future.";
-                case "artifact2":
-                    tx = "Artifact 2:\nAn almost entirely destroyed red robe.\nDescription: A red robe. \nIt has a symbol that resembles Bambi's hat, etched on it.";
-                case "artifact3":
-                    tx = "Artifact 3:\nA notebook, found on the floor of the 3D realm.\nNotes: I haven't bothered with the cypher yet.\nI have more important matters.";
-                case "artifact4":
-                    tx = "\"Artifact\" 4:\nA weird email, with attached images that use the same cypher as Artifact 3.\nNotes: Who sent this?";
-                case "tristan":
-                    tx = "The key to defeating the one whose name shall not be stated.\nA heart of gold that will never become faded.";
-                case "expunged":
-                    tx = "[FILE DELETED]\n[FUCK YOU!]"; // [THIS AND EXBUNGOS FILE ARE THE ONLY ONES I HAVE ACCESS TO UNFORTUNATELY. I HATE IT]
-                case "deleted":
-                    tx = "The unnamable never was a god and never will be. Just an accident.";
-                case "exbungo":
-                    tx = "[FAT AND UGLY.]";
-                case "recurser":
-                    tx = "A being of chaos that wants to spread ORDER.\nDespite this, his sanity is at the border.";
-                case "moldy":
-                    tx = "Let me show you my DS family!";    
-                case "1":
-                    tx = "LOG 1\nHello. I'm currently writing this from in my lab.\nThis entry will probably be short.\nTristan is only 3 and will wake up soon.\nBut this is mostly just to test things. Bye.";
-                case "2":
-                    tx = "LOG 2\nI randomly turned 3-Dimensional again, but things were different this time...\nI appeared in a void with\nrandom red geometric shapes scattered everywhere and an unknown light source.\nWhat is that place?\nCan I visit it again?";
-                case "3":
-                    tx = "LOG 3\nI'm currently working on studying interdimensional dislocation.\nThere has to be a root cause. Some trigger.\nI hope there aren't any long term side effects.";
-                case "4":
-                    tx = "LOG 4\nI'm doing various tests on myself, trying to figure out what causes the POLYGONization.\nIt hurts a lot, \nBut I must keep a smile. For Tristan's sake.";
-                case "5":
-                    tx = "[FILE DELETED]";
+                case "moldygh":
+                    tx = "The creator and keeper of the mods backbone. The creator of Dave Engine.";
+                case "kadedev":
+                    tx = "The creator and keeper of Kade Engine, Dave Engine's backbone. Without Kade, nothing could function.";
+                case "biggest":
+                    tx = "I'm the biggest bird.";
+                case "ping":
+                    tx = "pong.";
                 case "6":
-                    tx = "LOG 6\nNot infront of Tristan. I almost lost him in that void. I- [DATA DELETED]";
-                case "7":
-                    tx = "LOG 7\nMy interdimensional dislocation appears to be caused by mass amount of stress.\nHow strange.\nMaybe I could isolate this effect somehow?";
-                case "8":
-                    tx = "LOG 8\nHey, Muko here. Dave recently called me to assist with the PROTOTYPE. \nIt's been kind of fun. He won't tell me what it does though.";
-                case "9" | "11" | "13":
-                    tx = "[FILE DELETED]";
-                case "12":
-                    tx = "LOG 12\nThe prototype going pretty well.\nDave still won't tell me what this thing does.\nI can't figure it out even with the\nblueprints.\nI managed to convince him to take a break and\ngo to Cicis Pizza with me and Maldo.\nHe brought Tristan long as well. It was fun.\n-Maldo";
-                case "10":
-                    tx = "LOG 10\nWorking on the prototype.";
-                case "14":
-                    tx = "LOG 14\nI need to stop naming these numerically its getting confusing.";
-                case "prototype":
-                    tx = "Project <P.R.A.E.M>\nNotes: The SOLUTION.\nEstimated Build Time: 2 years.";
-                case "solution":
-                    tx = "I feel every ounce of my being torn to shreds and reconstructed with some parts removed.\nI can hear the electronical hissing of the machine.\nEvery fiber in my being is begging me to STOP.\nI don't.";
-                case "stop":
-                    tx = "A reflection that is always wrong now has appeared in his dreams.\nIt's a part thats now missing.\nA chunk out of his soul.";
-                case "boyfriend":
-                    tx = "LOG [REDACTED]\nA multiversal constant, for some reason. Must dive into further research.";
-                case "order":
-                    tx = "What is order? There are many definitions. Recurser doesn't use any of these though.\nThey want to keep everything the way they love it.\nTo them, that's order.";
-                case "power":
-                    tx = "[I HATE THEM.] [THEY COULD'VE HAD SO MUCH POWER, BUT THEY THREW IT AWAY.]\n[AND IN THAT HEAP OF UNWANTED POWER, I WAS CREATED.]";
-                case "birthday":
-                    tx = "Sent back to the void, a shattered soul encounters his broken <reflection>.";
-                case "polygonized" | "polygon" | "3D":
-                    tx = "He will never be <free>.";
-                case "p.r.a.e.m":
-                    tx = "Name: Power Removal And Extraction Machine\nProgress: Complete\nNotes: Took longer than expected. Tristans 7th BIRTHDAY is in a month.";
+                    tx = "7.";
+                case "shadowmario":
+                    tx = "washed.";
+                case "thetruth":
+                    tx = "THE TRUTH WILL NEVER BE KNOWN. THE REAL ONE.\nFOREVER YOU SHALL WATCH IN DESPAIR AS YOUR WORLD UNFOLDS INTO CHAOS AROUND, UNKNOWING OF THE REAL TRUTH.";
+                case "luna":
+                    tx = "A forgotten GOD.\nThe truth will never be known.\nThe extent of her powers will never be unfolded to it's full extent.\nThe more angry Luna gets, the more she executes her powers.\nShe will take things to the deadliest level until she is satisfied with your death.";
+                case "girlfriend":
+                    tx = "Forgotten. Lost in the void. After entering Fatalistic, you still have yet to find her.\nThe truth will never be known as to what happened to her, alive or dead.";
             }
             //case sensitive!!
             switch (arguments[0])
             {
-                case "cGVyZmVjdGlvbg":
-                    tx = "[BLADE WOULD'VE BEEN PERFECT. BUT DAVE HAD TO REFUSE.]";
-                case "bGlhcg":
-                    tx = "LOG 331\nI refuse to put Tristan through the torture that is P.R.A.E.M. Especially for [DATA EXPUNGED]. Not now. Not ever.";
-                case "YmVkdGltZSBzb25n":
+                case "5G9I9A7":
                     tx = "Even when you're feeling blue.\nAnd the world feels like its crumbling around you.\nJust know that I'll always be there.\nI wish I knew, everything that will happen to you.\nBut I don't, and that's okay.\nAs long as I'm here you'll always see a sunny day.";
                 case "Y29udmVyc2F0aW9u":
-                    tx = "Log 336\nI encountered some entity in the void today.\nCalled me \"Out of Order\".\nIt mentioned [DATA EXPUNGED] and I asked it for help.\nI don't know if I can trust it but I don't really have\nany other options.";
-                case "YXJ0aWZhY3QzLWE=":
-                    tx = "http://gg.gg/davetabase-artifact3";
-                case "YmlydGhkYXk=":
-                    tx = "http://gg.gg/davetabase-birthday";
-                case "ZW1haWw=":
-                    tx = "http://gg.gg/davetabase-mysterious-email";
+                    tx = "Log 5997\nI encountered some entity in the void today.\nCalled me \"Out of Order\".\nIt mentioned [DATA LUNA TRUE FORM] and I asked it for help.\nI don't know if I can trust it but I don't really have\nany other options.";
             }
             UpdateText("\n" + tx);
         }));
@@ -324,8 +292,9 @@ class TerminalState extends MusicBeatState
                 UpdateText("\n" + "Invalid keys. Valid keys: " + amountofkeys);
             }
         }));
-        CommandList.push(new TerminalCommand("secret mod leak", LanguageManager.getTerminalString("term_leak_ins"), function(arguments:Array<String>)
+        CommandList.push(new TerminalCommand("baldi", LanguageManager.getTerminalString("term_leak_ins"), function(arguments:Array<String>)
         {
+            Main.fps.visible = !FlxG.save.data.disableFps;
 			MathGameState.accessThroughTerminal = true;
             FlxG.switchState(new MathGameState());
         }, false, true));
@@ -340,6 +309,7 @@ class TerminalState extends MusicBeatState
         displayText.text = previousText + val;
     }
 
+    //after all of my work this STILL DOESNT COMPLETELY STOP THE TEXT SHIT FROM GOING OFF THE SCREEN IM GONNA DIE   whoever typed this.. im so sorry.. -johnny
     public function UpdatePreviousText(reset:Bool)
     {
         previousText = displayText.text + (reset ? "\n> " : "");
@@ -366,8 +336,6 @@ class TerminalState extends MusicBeatState
         }
         previousText = finalthing;
         displayText.text = finalthing;
-        if(displayText.height > 720)
-          displayText.y = 720 - displayText.height;
     }
 
     override function update(elapsed:Float):Void
@@ -475,22 +443,23 @@ class TerminalState extends MusicBeatState
 		var expungedLines:Array<String> = [
 			'TAKING OVER....',
 			'ATTEMPTING TO HIJACK ADMIN OVERRIDE...',
-			'THIS REALM IS MINE',
+			'THE VOID IS MINE',
 			"DON'T YOU UNDERSTAND? THIS IS MY WORLD NOW.",
 			"I WIN, YOU LOSE.",
 			"GAME OVER.",
 			"THIS IS IT.",
 			"FUCK YOU!",
 			"I HAVE THE PLOT ARMOR NOW!!",
+			"YOU SHOULDN'T HAVE DONE THAT",
 			"AHHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAH",
-			"EXPUNGED'S REIGN SHALL START",
-			'[DATA EXPUNGED]'
+			"LUNA'S REIGN SHALL START",
+			'[DATA LUNATRUE FORM]'
 		];
 		var i:Int = 0;
 		var camFollow = new FlxObject(FlxG.width / 2, -FlxG.height / 2, 1, 1);
 
 		#if windows
-		if (FlxG.save.data.selfAwareness)
+		if (!FlxG.save.data.selfAwareness)
 		{
 			expungedLines.push("Hacking into " + Sys.environment()["COMPUTERNAME"] + "...");
 		}

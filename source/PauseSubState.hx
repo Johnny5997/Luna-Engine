@@ -14,6 +14,7 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import flixel.util.FlxStringUtil;
 import flixel.addons.display.FlxBackdrop;
 import lime.app.Application;
 
@@ -26,7 +27,9 @@ class PauseSubState extends MusicBeatSubstate
 		new PauseOption('Resume'),
 		new PauseOption('Restart Song'),
 		new PauseOption('Change Character'),
-		new PauseOption('No Miss Mode'),
+		new PauseOption('Skip Time'),
+		new PauseOption('Practice Mode'),
+		new PauseOption('Botplay'),
 		new PauseOption('Exit to menu')
 	];
 	var curSelected:Int = 0;
@@ -38,10 +41,26 @@ class PauseSubState extends MusicBeatSubstate
 
 	public var funnyTexts:FlxTypedGroup<FlxText> = new FlxTypedGroup<FlxText>();
 
+	// Skip Time variables
+	var skipTimeText:FlxText;
+	var skipTimeTracker:Alphabet;
+	var curTime:Float = 0;
+	var holdTime:Float = 0;
+
+	// Checkbox variables
+	var checkboxGroup:FlxTypedGroup<CheckboxThingie>;
+	var practiceModeCheckbox:CheckboxThingie;
+	var botplayCheckbox:CheckboxThingie;
+
+	// Botplay notification
+	var botplayNotification:FlxText;
+	var notificationTween:FlxTween;
+
 	public function new(x:Float, y:Float)
 	{
 		super();
 
+		curTime = Math.max(0, Conductor.songPosition);
 		
 		funnyTexts = new FlxTypedGroup<FlxText>();
 		add(funnyTexts);
@@ -50,7 +69,7 @@ class PauseSubState extends MusicBeatSubstate
 		{
 			default:
 				pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
-			case "exploitation":
+			case "darkness":
 				pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast-ohno'), true, true);
 				expungedSelectWaitTime = new FlxRandom().float(2, 7);
 				patienceTime = new FlxRandom().float(15, 30);
@@ -89,7 +108,7 @@ class PauseSubState extends MusicBeatSubstate
 		levelDifficulty.antialiasing = true;
 		levelDifficulty.borderSize = 2.5;
 		levelDifficulty.updateHitbox();
-		if (PlayState.SONG.song.toLowerCase() == 'exploitation' && !PlayState.isGreetingsCutscene)
+		if ((PlayState.SONG.song.toLowerCase() == 'darkness' && !PlayState.isGreetingsCutscene) || PlayState.storyDifficulty != 1)
 		{
 			add(levelDifficulty);
 		}
@@ -108,19 +127,28 @@ class PauseSubState extends MusicBeatSubstate
 		{
 			switch (PlayState.SONG.song.toLowerCase())
 			{
-				case 'exploitation':
+				case 'darkness':
 					doALittleTrolling(levelDifficulty);
 			}
 		}});
+
+		// Remove options based on conditions
 		if (PlayState.isStoryMode || FreeplayState.skipSelect.contains(PlayState.SONG.song.toLowerCase()) || PlayState.instance.localFunny == PlayState.CharacterFunnyEffect.Recurser)
 		{
 			menuItems.remove(PauseOption.getOption(menuItems, 'Change Character'));
 		}
+		
+		// Only show Skip Time in practice mode (noMiss check)
+		if (!PlayState.instance.noMiss)
+		{
+			menuItems.remove(PauseOption.getOption(menuItems, 'Skip Time'));
+		}
+
 		for (item in menuItems)
 		{
 			if (PlayState.instance.localFunny == PlayState.CharacterFunnyEffect.Recurser)
 			{
-				if(item.optionName != 'Resume' && item.optionName != 'No Miss Mode')
+				if(item.optionName != 'Resume' && item.optionName != 'Practice Mode')
 				{
 					menuItems.remove(PauseOption.getOption(menuItems, item.optionName));
 				}
@@ -131,17 +159,110 @@ class PauseSubState extends MusicBeatSubstate
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
 
+		checkboxGroup = new FlxTypedGroup<CheckboxThingie>();
+		add(checkboxGroup);
+
 		for (i in 0...menuItems.length)
 		{
 			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, LanguageManager.getTextString('pause_${menuItems[i].optionName}'), true, false);
 			songText.isMenuItem = true;
 			songText.targetY = i;
 			grpMenuShit.add(songText);
+
+			// Add checkboxes for Practice Mode and Botplay
+			if (menuItems[i].optionName == 'Practice Mode')
+			{
+				practiceModeCheckbox = new CheckboxThingie(0, 0, PlayState.instance.noMiss);
+				practiceModeCheckbox.sprTracker = songText;
+				practiceModeCheckbox.offsetX = 0;
+				practiceModeCheckbox.offsetY = 0;
+				checkboxGroup.add(practiceModeCheckbox);
+			}
+			else if (menuItems[i].optionName == 'Botplay')
+			{
+				botplayCheckbox = new CheckboxThingie(0, 0, FlxG.save.data.botplay);
+				botplayCheckbox.sprTracker = songText;
+				botplayCheckbox.offsetX = 0;
+				botplayCheckbox.offsetY = 0;
+				checkboxGroup.add(botplayCheckbox);
+			}
 		}
 
 		changeSelection();
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+	}
+
+	function deleteSkipTimeText()
+	{
+		if(skipTimeText != null)
+		{
+			skipTimeText.kill();
+			remove(skipTimeText);
+			skipTimeText.destroy();
+		}
+		skipTimeText = null;
+		skipTimeTracker = null;
+	}
+
+	function updateSkipTextStuff()
+	{
+		if(skipTimeText == null || skipTimeTracker == null) return;
+
+		skipTimeText.x = skipTimeTracker.x + skipTimeTracker.width + 60;
+		skipTimeText.y = skipTimeTracker.y;
+		skipTimeText.visible = (skipTimeTracker.alpha >= 1);
+	}
+
+	function updateSkipTimeText()
+	{
+		if(skipTimeText != null)
+			skipTimeText.text = FlxStringUtil.formatTime(Math.max(0, Math.floor(curTime / 1000)), false) + ' / ' + FlxStringUtil.formatTime(Math.max(0, Math.floor(FlxG.sound.music.length / 1000)), false);
+	}
+
+	function showBotplayNotification()
+	{
+		// Cancel existing tweens to prevent buggy animations
+		if (notificationTween != null)
+		{
+			notificationTween.cancel();
+			notificationTween = null;
+		}
+
+		if (botplayNotification != null)
+		{
+			botplayNotification.kill();
+			remove(botplayNotification);
+			botplayNotification.destroy();
+		}
+
+		botplayNotification = new FlxText(0, FlxG.height + 50, FlxG.width, "Restart song to enable", 32);
+		botplayNotification.setFormat(Paths.font("comic.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		botplayNotification.borderSize = 2;
+		botplayNotification.scrollFactor.set();
+		add(botplayNotification);
+
+		notificationTween = FlxTween.tween(botplayNotification, {y: FlxG.height - 100}, 0.4, {
+			ease: FlxEase.quartOut,
+			onComplete: function(twn:FlxTween)
+			{
+				notificationTween = FlxTween.tween(botplayNotification, {y: FlxG.height + 50}, 0.4, {
+					ease: FlxEase.quartIn,
+					startDelay: 2.0,
+					onComplete: function(twn:FlxTween)
+					{
+						if (botplayNotification != null)
+						{
+							botplayNotification.kill();
+							remove(botplayNotification);
+							botplayNotification.destroy();
+							botplayNotification = null;
+						}
+						notificationTween = null;
+					}
+				});
+			}
+		});
 	}
 
 	override function update(elapsed:Float)
@@ -160,6 +281,40 @@ class PauseSubState extends MusicBeatSubstate
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
 
+		var daSelected:String = menuItems[curSelected].optionName;
+
+		// Handle Skip Time controls
+		if (daSelected == 'Skip Time')
+		{
+			if (controls.LEFT_P)
+			{
+				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+				curTime -= 1000;
+				holdTime = 0;
+			}
+			if (controls.RIGHT_P)
+			{
+				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+				curTime += 1000;
+				holdTime = 0;
+			}
+
+			if(controls.LEFT || controls.RIGHT)
+			{
+				holdTime += elapsed;
+				if(holdTime > 0.5)
+				{
+					curTime += 45000 * elapsed * (controls.LEFT ? -1 : 1);
+				}
+
+				if(curTime >= FlxG.sound.music.length) curTime -= FlxG.sound.music.length;
+				else if(curTime < 0) curTime += FlxG.sound.music.length;
+				updateSkipTimeText();
+			}
+		}
+
+		updateSkipTextStuff();
+
 		if (upP)
 		{
 			changeSelection(-1);
@@ -168,7 +323,7 @@ class PauseSubState extends MusicBeatSubstate
 		{
 			changeSelection(1);
 		}
-		if (PlayState.SONG.song.toLowerCase() == 'exploitation' && this.exists && PauseSubState != null)
+		if (PlayState.SONG.song.toLowerCase() == 'darkness' && this.exists && PauseSubState != null)
 		{
 			if (expungedSelectWaitTime >= 0)
 			{
@@ -186,6 +341,7 @@ class PauseSubState extends MusicBeatSubstate
 			selectOption();
 		}
 	}
+
 	function selectOption()
 	{
 		var daSelected:String = menuItems[curSelected].optionName;
@@ -200,7 +356,10 @@ class PauseSubState extends MusicBeatSubstate
 
 				PlayState.instance.shakeCam = false;
 				PlayState.instance.camZooming = false;
-				if (PlayState.SONG.song.toLowerCase() == "exploitation")
+
+				FlxG.sound.play(Paths.sound('cancelMenu'));
+
+				if (PlayState.SONG.song.toLowerCase() == "darkness")
 				{
 					if (PlayState.window != null)
 					{
@@ -211,32 +370,104 @@ class PauseSubState extends MusicBeatSubstate
 				FlxG.resetState();
 			case "Change Character":
 				if (MathGameState.failedGame)
+				{
+					MathGameState.failedGame = false;
+				}
+				funnyTexts.clear();
+				PlayState.characteroverride = 'none';
+				PlayState.formoverride = 'none';
+				PlayState.recursedStaticWeek = false;
+
+				FlxG.sound.play(Paths.sound('cancelMenu'));
+
+				Application.current.window.title = Main.applicationName;
+
+				if (PlayState.SONG.song.toLowerCase() == "darkness")
+				{
+					Main.toggleFuckedFPS(false);
+					if (PlayState.window != null)
 					{
-						MathGameState.failedGame = false;
+						PlayState.window.close();
 					}
-					funnyTexts.clear();
-					PlayState.characteroverride = 'none';
-					PlayState.formoverride = 'none';
-					PlayState.recursedStaticWeek = false;
-	
-					Application.current.window.title = Main.applicationName;
-	
-					if (PlayState.SONG.song.toLowerCase() == "exploitation")
+				}
+				PlayState.instance.shakeCam = false;
+				PlayState.instance.camZooming = false;
+				FlxG.mouse.visible = false;
+				FlxG.switchState(new CharacterSelectState());	
+			case 'Skip Time':
+				if(curTime < Conductor.songPosition)
+				{
+					// Going backwards - need to regenerate all notes
+					FlxG.sound.music.pause();
+					PlayState.instance.vocals.pause();
+		
+					// Regenerate all notes from scratch
+					PlayState.instance.regenerateNotes();
+		
+					// Set the song time
+					PlayState.instance.setSongTime(curTime);
+		
+					// Clear notes that are before the target time
+					PlayState.instance.clearNotesBefore(curTime);
+		
+					FlxG.sound.music.play();
+					PlayState.instance.vocals.play();
+					close();
+				}
+				else
+				{
+					// Going forwards - just clear old notes
+					if (curTime != Conductor.songPosition)
 					{
-						Main.toggleFuckedFPS(false);
-						if (PlayState.window != null)
-						{
-							PlayState.window.close();
-						}
+						FlxG.sound.music.pause();
+						PlayState.instance.vocals.pause();
+			
+						PlayState.instance.clearNotesBefore(curTime);
+						PlayState.instance.setSongTime(curTime);
+			
+						FlxG.sound.music.play();
+						PlayState.instance.vocals.play();
 					}
-					PlayState.instance.shakeCam = false;
-					PlayState.instance.camZooming = false;
-					FlxG.mouse.visible = false;
-					FlxG.switchState(new CharacterSelectState());	
-			case "No Miss Mode":
+					close();
+				}
+			case "Practice Mode":
 				PlayState.instance.noMiss = !PlayState.instance.noMiss;
 				var nm = PlayState.SONG.song.toLowerCase();
-				if (['exploitation', 'cheating', 'unfairness', 'recursed', 'glitch', 'master', 'supernovae'].contains(nm))
+
+				// Update checkbox
+				if (practiceModeCheckbox != null)
+				{
+					practiceModeCheckbox.daValue = PlayState.instance.noMiss;
+				}
+
+				FlxG.sound.play(Paths.sound('checkboxClick'));
+
+				if (['darkness', 'cheating', 'unfairness', 'recursed'].contains(nm))
+				{
+					PlayState.instance.health = 0;
+					close();
+				}
+			case "Botplay":
+				var previousBotplay = FlxG.save.data.botplay;
+				FlxG.save.data.botplay = !FlxG.save.data.botplay;
+				FlxG.save.flush();
+
+				// Update checkbox
+				if (botplayCheckbox != null)
+				{
+					botplayCheckbox.daValue = FlxG.save.data.botplay;
+				}
+
+				FlxG.sound.play(Paths.sound('checkboxClick'));
+
+				// Show notification if botplay was just enabled
+				if (!previousBotplay && FlxG.save.data.botplay)
+				{
+					showBotplayNotification();
+				}
+
+				var nm = PlayState.SONG.song.toLowerCase();
+				if (['darkness', 'cheating', 'unfairness', 'recursed'].contains(nm))
 				{
 					PlayState.instance.health = 0;
 					close();
@@ -251,9 +482,11 @@ class PauseSubState extends MusicBeatSubstate
 				PlayState.formoverride = 'none';
 				PlayState.recursedStaticWeek = false;
 
+				FlxG.sound.play(Paths.sound('cancelMenu'));
+
 				Application.current.window.title = Main.applicationName;
 
-				if (PlayState.SONG.song.toLowerCase() == "exploitation")
+				if (PlayState.SONG.song.toLowerCase() == "darkness")
 				{
 					Main.toggleFuckedFPS(false);
 					if (PlayState.window != null)
@@ -267,9 +500,11 @@ class PauseSubState extends MusicBeatSubstate
 				FlxG.switchState(new MainMenuState());
 		}
 	}
+
 	override function close()
 	{
 		funnyTexts.clear();
+		FlxG.sound.play(Paths.sound('cancelMenu'));
 
 		super.close();
 	}
@@ -280,6 +515,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		super.destroy();
 	}
+
 	function doALittleTrolling(levelDifficulty:FlxText)
 	{
 		var difficultyHeight = levelDifficulty.height;
@@ -311,6 +547,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		}
 	}
+
 	function changeSelection(change:Int = 0):Void
 	{
 		curSelected += change;
@@ -328,16 +565,41 @@ class PauseSubState extends MusicBeatSubstate
 			bullShit++;
 
 			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
+				
+				// Handle Skip Time display
+				if(item == skipTimeTracker)
+				{
+					curTime = Math.max(0, Conductor.songPosition);
+					updateSkipTimeText();
+				}
 			}
+		}
+
+		// Create or destroy skip time text based on selection
+		var daSelected:String = menuItems[curSelected].optionName;
+		if (daSelected == 'Skip Time' && skipTimeText == null)
+		{
+			skipTimeText = new FlxText(0, 0, 0, '', 64);
+			skipTimeText.setFormat(Paths.font("comic.ttf"), 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			skipTimeText.scrollFactor.set();
+			skipTimeText.borderSize = 2;
+			skipTimeTracker = grpMenuShit.members[curSelected];
+			add(skipTimeText);
+
+			updateSkipTextStuff();
+			updateSkipTimeText();
+		}
+		else if (daSelected != 'Skip Time' && skipTimeText != null)
+		{
+			deleteSkipTimeText();
 		}
 	}
 }
+
 class PauseOption
 {
 	public var optionName:String;
@@ -357,5 +619,74 @@ class PauseOption
 			}
 		}
 		return null;
+	}
+}
+
+class CheckboxThingie extends FlxSprite
+{
+	public var sprTracker:FlxSprite;
+	public var daValue(default, set):Bool;
+	public var copyAlpha:Bool = true;
+	public var offsetX:Float = 0;
+	public var offsetY:Float = 0;
+	
+	public function new(x:Float = 0, y:Float = 0, ?checked = false) 
+	{
+		super(x, y);
+		frames = Paths.getSparrowAtlas('ui/checkboxanim');
+		animation.addByPrefix("unchecked", "checkbox0", 24, false);
+		animation.addByPrefix("unchecking", "checkbox anim reverse", 24, false);
+		animation.addByPrefix("checking", "checkbox anim0", 24, false);
+		animation.addByPrefix("checked", "checkbox finish", 24, false);
+		antialiasing = true;
+		setGraphicSize(Std.int(0.9 * width));
+		updateHitbox();
+		animationFinished(checked ? 'checking' : 'unchecking');
+		animation.finishCallback = animationFinished;
+		daValue = checked;
+	}
+	
+	override function update(elapsed:Float) 
+	{
+		if (sprTracker != null) 
+		{
+			setPosition(sprTracker.x + sprTracker.width + 20 + offsetX, sprTracker.y - 20 + offsetY);
+			if(copyAlpha) 
+			{
+				alpha = sprTracker.alpha;
+			}
+		}
+		super.update(elapsed);
+	}
+	
+	private function set_daValue(check:Bool):Bool 
+	{
+		if(check) 
+		{
+			if(animation.curAnim.name != 'checked' && animation.curAnim.name != 'checking') 
+			{
+				animation.play('checking', true);
+				offset.set(34, 25);
+			}
+		} 
+		else if(animation.curAnim.name != 'unchecked' && animation.curAnim.name != 'unchecking') 
+		{
+			animation.play("unchecking", true);
+			offset.set(25, 28);
+		}
+		return check;
+	}
+	
+	private function animationFinished(name:String)
+	{
+		switch(name)
+		{
+			case 'checking':
+				animation.play('checked', true);
+				offset.set(3, 12);
+			case 'unchecking':
+				animation.play('unchecked', true);
+				offset.set(0, 2);
+		}
 	}
 }

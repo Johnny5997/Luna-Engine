@@ -15,7 +15,7 @@ class Highscore
 
 	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0, ?char:String = "bf"):Void
 	{
-		var daSong:String = formatSong(song);
+		var daSong:String = formatSong(song, diff);
 
 		if (songScores.exists(daSong))
 			{
@@ -32,7 +32,7 @@ class Highscore
 
 	public static function saveWeekScore(week:Int = 1, score:Int = 0, ?diff:Int = 0, ?char:String = "bf"):Void
 	{
-		var daWeek:String = formatSong('week' + week);
+		var daWeek:String = formatSong('week' + week, diff);
 	
 		if (songScores.exists(daWeek))
 		{
@@ -64,51 +64,56 @@ class Highscore
 		FlxG.save.flush();
 	}
 
-	public static function formatSong(song:String):String
+	public static function formatSong(song:String, diff:Int):String
 	{
 		var daSong:String = song;
+
+		if (diff == 0)
+			daSong += '-extrakeys';
+		else if (diff == 2)
+			daSong += '-mania';
 
 		return daSong;
 	}
 
-	public static function getScore(song:String):Int
+	public static function getScore(song:String, diff:Int):Int
 	{
-		if (!songScores.exists(formatSong(song)))
+		if (!songScores.exists(formatSong(song, diff)))
 		{
-			setScore(formatSong(song), 0, "bf");
+			setScore(formatSong(song, diff), 0, "bf");
 		}
-		return songScores.get(formatSong(song));
+		return songScores.get(formatSong(song, diff));
 	}
 
-	public static function getChar(song:String):String
+	public static function getChar(song:String, diff:Int):String
 	{
 		if (songChars == null)
 			return "ERROR";
-		if (!songChars.exists(formatSong(song)))
+		if (!songChars.exists(formatSong(song, diff)))
 		{
-			setChar(formatSong(song), "bf");
+			setChar(formatSong(song, diff), "bf");
 			return "bf";
 		}
-		return songChars.get(formatSong(song));
+		return songChars.get(formatSong(song, diff));
 	}
 
-	public static function getWeekScore(week:Int):Int
+	public static function getWeekScore(week:Int, diff:Int):Int
 	{
-		if (!songScores.exists(formatSong('week' + week)))
+		if (!songScores.exists(formatSong('week' + week, diff)))
 		{
-			setScore(formatSong('week' + week), 0, "bf");
+			setScore(formatSong('week' + week, diff), 0, "bf");
 		}
-		return songScores.get(formatSong('week' + week));
+		return songScores.get(formatSong('week' + week, diff));
 	}
 
 	public static function getWeekChar(week:Int, diff:Int):String
 	{
-		if (!songScores.exists(formatSong('week' + week)))
+		if (!songScores.exists(formatSong('week' + week, diff)))
 		{
-			setChar(formatSong('week' + week), "bf");
+			setChar(formatSong('week' + week, diff), "bf");
 			return "bf";
 		}
-		return songChars.get(formatSong('week' + week));
+		return songChars.get(formatSong('week' + week, diff));
 	}
 
 	public static function load():Void

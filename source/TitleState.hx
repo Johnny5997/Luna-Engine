@@ -45,6 +45,9 @@ class TitleState extends MusicBeatState
 
 	var wackyImage:FlxSprite;
 
+    var bg:FlxSprite;
+    var bgShader:Shaders.GlitchEffect; // add shader var
+
 	var fun:Int;
 	var awaitingExploitation:Bool;
 	var eye:FlxSprite;
@@ -137,17 +140,136 @@ class TitleState extends MusicBeatState
 			transIn = FlxTransitionableState.defaultTransIn;
 			transOut = FlxTransitionableState.defaultTransOut;
 
-			FlxG.sound.playMusic(Paths.music(awaitingExploitation ? 'freakyMenu_ex' : 'freakyMenu'), 0);			
-			FlxG.sound.music.fadeIn(4, 0, 0.7);
+		if (awaitingExploitation)
+		{
+			// Exploitation versions
+			if (FlxG.save.data.altMenuMusic == 1) // FreakierMenu
+			{
+				FlxG.sound.playMusic(Paths.music('freakierMenu_ex'), 0);
+				Conductor.changeBPM(135);
+			}
+			else if (FlxG.save.data.altMenuMusic == 2) // NoahEngine
+			{
+				FlxG.sound.playMusic(Paths.music('noahEngine_ex'), 0);
+				Conductor.changeBPM(102);
+			}
+			else if (FlxG.save.data.altMenuMusic == 3) // Pinecone
+			{
+				FlxG.sound.playMusic(Paths.music('pinecone_ex'), 0);
+				Conductor.changeBPM(293);
+			}
+			else if (FlxG.save.data.altMenuMusic == 4) // Playstation
+			{
+				FlxG.sound.playMusic(Paths.music('playstation_ex'), 0);
+				Conductor.changeBPM(121);
+			}
+			else if (FlxG.save.data.altMenuMusic == 5) // Love Songs
+			{
+				FlxG.sound.playMusic(Paths.music('loveSongs_ex'), 0);
+				Conductor.changeBPM(120);
+			}
+			else if (FlxG.save.data.altMenuMusic == 6) // Jacobs Ladder
+			{
+				FlxG.sound.playMusic(Paths.music('jacobsLadder_ex'), 0);
+				Conductor.changeBPM(146);
+			}
+			else if (FlxG.save.data.altMenuMusic == 7) // Diddy Blud
+			{
+				FlxG.sound.playMusic(Paths.music('diddyBlud_ex'), 0);
+				Conductor.changeBPM(184);
+			}
+			else // FreakyMenu (default)
+			{
+				FlxG.sound.playMusic(Paths.music('freakyMenu_ex'), 0);
+				Conductor.changeBPM(150);
+			}
 		}
+		else
+		{
+			// Normal versions
+			if (FlxG.save.data.altMenuMusic == 1) // FreakierMenu
+			{
+				FlxG.sound.playMusic(Paths.music('freakierMenu'), 0);
+				Conductor.changeBPM(135);
+			}
+			else if (FlxG.save.data.altMenuMusic == 2) // NoahEngine
+			{
+				FlxG.sound.playMusic(Paths.music('noahEngine'), 0);
+				Conductor.changeBPM(102);
+			}
+			else if (FlxG.save.data.altMenuMusic == 3) // Pinecone
+			{
+				FlxG.sound.playMusic(Paths.music('pinecone'), 0);
+				Conductor.changeBPM(293);
+			}
+			else if (FlxG.save.data.altMenuMusic == 4) // Playstation
+			{
+				FlxG.sound.playMusic(Paths.music('playstation'), 0);
+				Conductor.changeBPM(121);
+			}
+			else if (FlxG.save.data.altMenuMusic == 5) // Love Songs
+			{
+				FlxG.sound.playMusic(Paths.music('loveSongs'), 0);
+				Conductor.changeBPM(120);
+			}
+			else if (FlxG.save.data.altMenuMusic == 6) // Jacobs Ladder
+			{
+				FlxG.sound.playMusic(Paths.music('jacobsLadder'), 0);
+				Conductor.changeBPM(146);
+			}
+			else if (FlxG.save.data.altMenuMusic == 7) // Diddy Blud
+			{
+				FlxG.sound.playMusic(Paths.music('diddyBlud'), 0);
+				Conductor.changeBPM(184);
+			}
+			else // FreakyMenu (default)
+			{
+				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+				Conductor.changeBPM(150);
+			}
+		}
+	}
 
-		Conductor.changeBPM(148);
-		persistentUpdate = true;
+	FlxG.sound.music.fadeIn(4, 0, 0.7);
+	persistentUpdate = true;
 
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		add(bg);
+		// THE NEW WALLPAPER CODEEEEEEEEEEEEEEEEEEEE -johnny
+        if (awaitingExploitation)
+        {
+            // Wavy wallpaper background
+            bg = new FlxSprite(-500, -300).loadGraphic(Paths.image('backgrounds/void/oooshittt', 'shared'));
+            bg.scrollFactor.set();
+            bg.antialiasing = false;
 
-		logoBl = new FlxSprite(-25, -50);
+            #if SHADERS_ENABLED
+            bgShader = new Shaders.GlitchEffect();
+            bgShader.waveAmplitude = 0.1;
+            bgShader.waveFrequency = 5;
+            bgShader.waveSpeed = 2;
+            bg.shader = bgShader.shader;
+            #end
+
+            add(bg);
+        }
+        else
+        {
+            // Wavy wallpaper background
+            bg = new FlxSprite(-500, -300).loadGraphic(Paths.image('backgrounds/void/mainmenubgbutdarkenedlol', 'shared'));
+            bg.scrollFactor.set();
+            bg.antialiasing = false;
+
+            #if SHADERS_ENABLED
+            bgShader = new Shaders.GlitchEffect();
+            bgShader.waveAmplitude = 0.1;
+            bgShader.waveFrequency = 5;
+            bgShader.waveSpeed = 2;
+            bg.shader = bgShader.shader;
+            #end
+
+            add(bg);
+        }
+
+		logoBl = new FlxSprite(-95, -80);
 		if (!awaitingExploitation)
 		{
 			logoBl.frames = Paths.getSparrowAtlas('ui/logoBumpin');
@@ -155,11 +277,11 @@ class TitleState extends MusicBeatState
 		else
 		{
 			logoBl.frames = Paths.getSparrowAtlas('ui/logoBumpinExpunged');
-			Application.current.window.title = "Friday Night Funkin' | VS. EXPUNGED";
+			Application.current.window.title = "Friday Night Funkin' | VS. Luna?";
 		}
 		logoBl.antialiasing = true;
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
-		logoBl.setGraphicSize(Std.int(logoBl.width * 1.2));
+		logoBl.setGraphicSize(Std.int(logoBl.width * 1));
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
 		if (awaitingExploitation)
@@ -235,9 +357,8 @@ class TitleState extends MusicBeatState
 
 		// Init the first line of text on the intro start to prevent the intro text bug
 		createCoolText(['Created by:']);
-		addMoreText('MoldyGH');
-		addMoreText('MissingTextureMan101');
-		addMoreText('Rapparep LOL');
+		addMoreText('Johnny5997');
+		addMoreText('GD Noah');
 	}
 
 	function getIntroTextShit():Array<Array<String>>
@@ -262,6 +383,12 @@ class TitleState extends MusicBeatState
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
+
+        // Update shader if active
+        #if SHADERS_ENABLED
+        if (bgShader != null)
+            bgShader.update(elapsed);
+        #end
 
 		if (FlxG.keys.justPressed.F)
 		{
@@ -351,16 +478,16 @@ class TitleState extends MusicBeatState
 			switch (curBeat)
 			{
 				case 3:
-					addMoreText('TheBuilderXD');
-					addMoreText('Erizur, T5mpler');
+					addMoreText('MoldyGH');
+					addMoreText('MissingTextureMan101');
 				case 4:
-					addMoreText('and our wonderful contributors!');
+					addMoreText('Rapparep LOL, and more');
 				case 5:
 					deleteCoolText();
 				case 6:
-					createCoolText(['Supernovae by ArchWk']);
+					createCoolText(['Luna chromatics by Ruby']);
 				case 7:
-					addMoreText('Glitch by The Boneyard');
+					addMoreText('Engine originally from Vs Dave and Bambi');
 				case 8:
 					deleteCoolText();
 				case 9:
@@ -370,16 +497,44 @@ class TitleState extends MusicBeatState
 				case 11:
 					deleteCoolText();
 				case 12:
-					addMoreText("Friday Night Funkin'");
+					createCoolText(['With lots of help from']);
 				case 13:
-					addMoreText(awaitingExploitation ? 'Vs. Expunged' : 'VS. Dave');
+					addMoreText('Our amazing contributors!');
 				case 14:
-					addMoreText(!awaitingExploitation  ? 'and Bambi' : 'The Full Mod');
+					addMoreText('And others');
 				case 15:
+					deleteCoolText();
+				case 17:
+					addMoreText('mod of the year');
+				case 18:
+					addMoreText('2025');
+				case 19:
+					deleteCoolText();
+				case 20:
+					addMoreText('Special thanks to');
+				case 21:
+					addMoreText('Magman');
+				case 22:
+					addMoreText('For Extra Keys mod');
+				case 23:
+					deleteCoolText();
+				case 25:
+					addMoreText('Welcome');
+				case 26:
+					addMoreText('to...');
+				case 27:
+					deleteCoolText();
+				case 28:
+					addMoreText("Friday Night Funkin'");
+				case 29:
+					addMoreText(awaitingExploitation ? 'Vs. Luna?' : 'VS Luna');
+				case 30:
+					addMoreText(!awaitingExploitation  ? 'The Cat' : 'The Full Mod');
+				case 31:
 					var text:String = !awaitingExploitation  ? 'The Full Mod' : 'HAHAHHAHAHAHAHHAHAHAHAHHAHAHAHAHHAHA\nHAHAHHAHAHAHAHHAHAHAHAHHAHAHAHAHHAHA\nHAHAHHAHAHAHAHHAHAHAHAHHAHAHAHAHHAHA';
 					if (awaitingExploitation) FlxG.sound.play(Paths.sound('evilLaugh', 'shared'), 0.7);
 					addMoreText(text);
-				case 16:
+				case 32:
 					skipIntro();
 			}
 		}

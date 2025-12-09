@@ -62,32 +62,12 @@ class DialogueBox extends FlxSpriteGroup
 		{
 			switch (PlayState.SONG.song.toLowerCase())
 			{
-				case 'house' | 'insanity' | 'splitathon' | 'shredder':
+				case 'warmup' | 'luna' | 'treats' | 'scratch' | 'action' | 'action-two' | 'meow' | 'galactic' | 'milky-way':
 					FlxG.sound.playMusic(Paths.music('DaveDialogue'), 0);
-				case 'polygonized' | 'interdimensional' | 'master':
+				case 'fatalistic' | 'nomophobia' | 'disoriented' | 'cheating' | 'unfairness' | 'master' | 'heavenly' | 'septuagint' | 'clamorous' | 'psychosis':
 					if (PlayState.instance.localFunny != PlayState.CharacterFunnyEffect.Recurser)
 					{
 						FlxG.sound.playMusic(Paths.music('scaryAmbience'), 0);
-					}
-					else
-					{
-						FlxG.sound.playMusic(Paths.music('DaveDialogue'), 0);
-					}
-				case 'supernovae' | 'glitch':
-					randomNumber = FlxG.random.int(0, 50);
-					if (randomNumber == 50)
-					{
-						FlxG.sound.playMusic(Paths.music('secret'), 0);
-					}
-					else
-					{
-						FlxG.sound.playMusic(Paths.music('dooDooFeces'), 0);
-					}
-				case 'blocked' | 'corn-theft' | 'maze':
-					randomNumber = FlxG.random.int(0, 50);
-					if (randomNumber == 50)
-					{
-						FlxG.sound.playMusic(Paths.music('secret'), 0);
 					}
 					else
 					{
@@ -138,36 +118,9 @@ class DialogueBox extends FlxSpriteGroup
 		
 		switch (PlayState.SONG.song.toLowerCase())
 		{
-			case 'house':
-				portraitLeftCharacter = ['dave', 'normal'];
-			case 'insanity':
-				portraitLeftCharacter = ['dave', 'annoyed'];
-			case 'polygonized':
-				if (PlayState.instance.localFunny != PlayState.CharacterFunnyEffect.Recurser)
-				{
-					portraitLeftCharacter = ['dave', '3d-scared'];
-				}
-				else
-				{
-					portraitLeftCharacter = ['dave', 'normal'];
-				}
 			case 'blocked':
 				portraitLeftCharacter = ['bambi', 'annoyed'];
 				portraitRightCharacter = ['gf', 'happy'];
-			case 'corn-theft':
-				portraitLeftCharacter = ['bambi', 'normal'];
-				portraitRightCharacter = ['gf', 'what'];
-			case 'maze':
-				portraitLeftCharacter = ['bambi', 'upset'];
-				portraitRightCharacter = ['gf', 'what'];
-			case 'supernovae' | 'glitch' | 'master':
-				portraitLeftCharacter = ['bambi', 'bevelmad'];
-			case 'splitathon':
-				portraitLeftCharacter = ['bambi', 'splitathon'];
-			case 'shredder' | 'rano':
-				portraitLeftCharacter = ['dave', 'festival-happy'];
-			case 'greetings':
-				portraitLeftCharacter = ['dave', 'festival-tired'];
 			case 'interdimensional':
 				portraitLeftCharacter = ['dave', 'festival-3d-scared'];
 		}
@@ -201,7 +154,7 @@ class DialogueBox extends FlxSpriteGroup
 
 		switch (PlayState.SONG.song.toLowerCase())
 		{
-			case 'polygonized' | 'interdimensional':
+			case 'interdimensional':
 				dropText = new FlxText(242, 502, Std.int(FlxG.width * 0.6), "", 32);
 				dropText.font = 'Comic Sans MS Bold';
 				dropText.color = PlayState.instance.localFunny != PlayState.CharacterFunnyEffect.Recurser ? 0xFFFFFFFF : 0xFF00137F;
@@ -243,16 +196,22 @@ class DialogueBox extends FlxSpriteGroup
 		dropText.text = swagDialogue.text;
 		switch (curCharacter)
 		{
-			case 'dave':
-				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/daveDialogue'), 0.9)];
+			case 'luna':
+				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/lunaDialogue'), 0.9)];
+			case 'lunaflip':
+				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/lunaDialogue'), 0.9)];
+			case 'johnny':
+				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/johnnyDialogue'), 0.9)];
 			case 'bambi':
 				swagDialogue.sounds = [FlxG.sound.load(Paths.soundRandom('dialogue/bambDialogue', 1, 3), 0.6)];
-			case 'tristan':
-				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/trisDialogue'), 0.9)];
 			case 'bf':
 				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/bfDialogue'), 0.6)];		
 			case 'gf':
 				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/gfDialogue'), 0.6)];	
+			case 'itsumi':
+				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/itsumiDialogue'), 0.6)];	
+			case 'itsumispectre':
+				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/itsumiDialogue'), 0.6)];
 			default:
 				swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/pixelText'), 0.6)];	
 		}
@@ -352,30 +311,85 @@ class DialogueBox extends FlxSpriteGroup
 			}
 			switch (curCharacter)
 			{
-				case 'dave':
+				case 'luna':
 					switch (curExpression)
 					{
-						case 'scared':
-							portraitLeft.setPosition(180, 220);
-						case 'phone':
-							portraitLeft.setPosition(77, 145);
-						case '3d-scared':
+						case 'dark':
+							portraitLeft.setPosition(200, 220);
+						case 'nomo':
+							portraitLeft.setPosition(200, 220);
+						case 'dis':
+							portraitLeft.setPosition(200, 220);
+						case 'final':
 							portraitLeft.setPosition(110, 226);
-						case 'shocked':
-							portraitLeft.setPosition(150, 220);	
-						case 'furious':
-							portraitLeft.setPosition(170, 220);	
-						case 'festival-3d-scared':
-							portraitLeft.setPosition(135, 174);
-						case 'festival-tired' | 'festival-exhausted' | 'festival':
-							portraitLeft.setPosition(200, 175);
+						case 'happy':
+							portraitLeft.setPosition(200, 220);	
+
+						//hortas stuff
+						case 'holy':
+							portraitLeft.setPosition(200, 220);	
+						case 'septuagint':
+							portraitLeft.setPosition(200, 220);	
+						case 'clamorous':
+							portraitLeft.setPosition(200, 220);	
+						case 'psychosis':
+							portraitLeft.setPosition(200, 220);	
+
+						case '3d':
+							portraitLeft.setPosition(200, 220);
 						default:
 							portraitLeft.setPosition(200, 220);
 					}
+				case 'lunaflip':
+					switch (curExpression)
+					{
+						case 'dark':
+							portraitRight.setPosition(700, 220);
+						case 'final':
+							portraitRight.setPosition(700, 226);
+						case 'happy':
+							portraitRight.setPosition(700, 220);	
+						default:
+							portraitRight.setPosition(700, 220);
+					}
+				case 'itsumi':
+					switch (curExpression)
+					{
+						case 'embarassed':
+							portraitLeft.setPosition(200, 220);
+						case 'confused':
+							portraitLeft.setPosition(200, 220);
+						case 'normal':
+							portraitLeft.setPosition(200, 220);
+						case 'happy':
+							portraitLeft.setPosition(200, 220);	
+						default:
+							portraitLeft.setPosition(200, 220);
+					}
+				case 'itsumispectre':
+					switch (curExpression)
+					{
+						case 'embarassed':
+							portraitLeft.setPosition(200, 220);
+						case 'confused':
+							portraitLeft.setPosition(200, 220);
+						case 'normal':
+							portraitLeft.setPosition(200, 220);
+						case 'happy':
+							portraitLeft.setPosition(200, 220);	
+						default:
+							portraitLeft.setPosition(200, 220);
+					}
+				case 'johnny':
+					switch (curExpression)
+					{
+						case 'happy':
+							portraitLeft.setPosition(200, 120);
+						default:
+							portraitLeft.setPosition(200, 120);
+					}
 				case 'bambi': //guys its the funny bambi character
-					portraitLeft.setPosition(200, 220);
-				case 'tristan':
-					portraitLeft.setPosition(143, 200);
+					portraitLeft.setPosition(200, 120);
 				case 'bf' | 'gf': //create boyfriend & genderbent boyfriend
 					portraitRight.setPosition(570, 220);
 			}
@@ -464,39 +478,92 @@ class DialogueBox extends FlxSpriteGroup
 
 		switch (character)
 		{
-			case 'dave':
+			case 'luna':
 				switch (expression)
 				{
-					case 'annoyed':
-						portrait.portraitPath = 'dialogue/dave/dave_annoyed';
-					case 'scared':
-						portrait.portraitPath = 'dialogue/dave/dave_scared';
-						portrait.portraitAnim = new Animation('enter', 'post insanity', 24, true, [false, false]);
-					case 'phone':
-						portrait.portraitPath = 'dialogue/dave/dave_phone';
-					case '3d-scared':
-						portrait.portraitPath = 'dialogue/dave/dave_3d_scared';
-					case 'post-maze':
-						portrait.portraitPath = 'dialogue/dave/dave_postMaze';
-					case 'splitathon':
-						portrait.portraitPath = 'dialogue/dave/dave_splitathon';
-					case 'festival':
-						portrait.portraitPath = 'dialogue/dave/dave_festival_happy';
-					case 'festival-exhausted':
-						portrait.portraitPath = 'dialogue/dave/dave_festival_exhausted';
-					case 'festival-tired':
-						portrait.portraitPath = 'dialogue/dave/dave_festival_tired';
-					case 'festival-3d-scared':
-						portrait.portraitPath = 'dialogue/dave/dave_3d_festival';
-					case 'shocked':
-						portrait.portraitPath = 'dialogue/dave/dave_shocked';
-					case 'erm':
-						portrait.portraitPath = 'dialogue/dave/dave_erm';
-					case 'furious':
-						portrait.portraitPath = 'dialogue/dave/dave_furious';			
+					case 'happy':
+						portrait.portraitPath = 'dialogue/luna/luna_happy';
+					case 'final':
+						portrait.portraitPath = 'dialogue/luna/luna_final';
+					case 'dark':
+						portrait.portraitPath = 'dialogue/luna/luna_dark';
+					case 'nomo':
+						portrait.portraitPath = 'dialogue/luna/luna_nomo';
+					case 'dis':
+						portrait.portraitPath = 'dialogue/luna/luna_dis';
+
+					// spectre stuff
+					case 'spectre':
+						portrait.portraitPath = 'dialogue/luna/luna_spectre';
+
+					// hortas stuff
+					case 'holy':
+						portrait.portraitPath = 'dialogue/luna/hortas/luna_holy';
+					case 'septuagint':
+						portrait.portraitPath = 'dialogue/luna/hortas/luna_septuagint';
+					case 'clamorous':
+						portrait.portraitPath = 'dialogue/luna/hortas/luna_clamorous';
+					case 'psychosis':
+						portrait.portraitPath = 'dialogue/luna/hortas/luna_psychosis';
+
+					case '3d':
+						portrait.portraitPath = 'dialogue/luna/luna_3d';
 					default:
-						portrait.portraitPath = 'dialogue/dave/dave_happy';
+						portrait.portraitPath = 'dialogue/luna/luna_happy';
 				}
+				portrait.left = true;
+			case 'lunaflip':
+				switch (expression)
+				{
+					case 'happy':
+						portrait.portraitPath = 'dialogue/lunaflip/luna_happy';
+					case 'final':
+						portrait.portraitPath = 'dialogue/lunaflip/luna_final';
+					case 'dark':
+						portrait.portraitPath = 'dialogue/lunaflip/luna_dark';
+					default:
+						portrait.portraitPath = 'dialogue/lunaflip/luna_happy';
+				}
+				portrait.left = false;
+			case 'itsumi':
+				switch (expression)
+				{
+					case 'happy':
+						portrait.portraitPath = 'dialogue/itsumi/itsumi_happy';
+					case 'normal':
+						portrait.portraitPath = 'dialogue/itsumi/itsumi_normal';
+					case 'embarassed':
+						portrait.portraitPath = 'dialogue/itsumi/itsumi_embarassed';
+					case 'confused':
+						portrait.portraitPath = 'dialogue/itsumi/itsumi_confused';
+					default:
+						portrait.portraitPath = 'dialogue/itsumi/itsumi_happy';
+				}
+				portrait.left = true;
+			case 'itsumispectre':
+				switch (expression)
+				{
+					case 'happy':
+						portrait.portraitPath = 'dialogue/itsumispectre/itsumi_happy';
+					case 'normal':
+						portrait.portraitPath = 'dialogue/itsumispectre/itsumi_normal';
+					case 'embarassed':
+						portrait.portraitPath = 'dialogue/itsumispectre/itsumi_embarassed';
+					case 'confused':
+						portrait.portraitPath = 'dialogue/itsumispectre/itsumi_confused';
+					default:
+						portrait.portraitPath = 'dialogue/itsumispectre/itsumi_happy';
+				}
+				portrait.left = true;
+			case 'johnny':
+				switch (expression)
+				{
+					case 'happy':
+						portrait.portraitPath = 'dialogue/johnny/johnny_happy';
+					default:
+						portrait.portraitPath = 'dialogue/johnny/johnny_happy';
+				}
+				portrait.left = true;
 			case 'bambi':
 				switch (expression)
 				{
@@ -506,8 +573,10 @@ class DialogueBox extends FlxSpriteGroup
 						portrait.portraitPath = 'dialogue/bambi/bambi_upset';
 					case 'splitathon':
 						portrait.portraitPath = 'dialogue/bambi/bambi_splitathon';
-					case 'bevel':
-						portrait.portraitPath = 'dialogue/bambi/bambi_bevel';
+					case 'cheating':
+						portrait.portraitPath = 'dialogue/bambi/bambi_cheating';
+					case 'unfair':
+						portrait.portraitPath = 'dialogue/bambi/bambi_unfair';
 					case 'bevelmad':
 						portrait.portraitPath = 'dialogue/bambi/bambi_bevel_mad';
 					default:
@@ -522,6 +591,15 @@ class DialogueBox extends FlxSpriteGroup
 						portrait.portraitPath = 'dialogue/bf/bf_confused';
 					case 'upset':
 						portrait.portraitPath = 'dialogue/bf/bf_upset';
+					case '3d':
+						portrait.portraitPath = 'dialogue/bf/bf_3d';
+
+					// spectre stuff
+					case 'confusedspectre':
+						portrait.portraitPath = 'dialogue/bf/bf_confusedspectre';
+					case 'happyspectre':
+						portrait.portraitPath = 'dialogue/bf/bf_happyspectre';
+
 					default:
 						portrait.portraitPath = 'dialogue/bf/bf_happy';
 				}
@@ -539,18 +617,6 @@ class DialogueBox extends FlxSpriteGroup
 						portrait.portraitPath = 'dialogue/gf/gf_happy';
 				}
 				portrait.left = false;
-			case 'tristan':
-				switch (expression)
-				{
-					case 'festival-content':
-						portrait.portraitPath = 'dialogue/tristan/tristan_festival_content';
-					case 'irritated':
-						portrait.portraitPath = 'dialogue/tristan/tristan_irritated';
-					case 'sad':
-						portrait.portraitPath = 'dialogue/tristan/tristan_sad';
-					default:
-						portrait.portraitPath = 'dialogue/tristan/tristan_content';
-				}
 		}
 		return portrait;
 	}

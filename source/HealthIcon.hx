@@ -1,7 +1,9 @@
-package;
+﻿package;
 
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
+
+import openfl.utils.Assets;
 
 class HealthIcon extends FlxSprite
 {
@@ -33,16 +35,37 @@ class HealthIcon extends FlxSprite
 	{
 		if (this.char != char)
 		{
-			if (char != "none")
-				loadGraphic(Paths.image('ui/iconGrid/' + char, 'preload'), true, 150, 150);
-			else
-				loadGraphic(Paths.image('blank', 'shared'));
-	
+			var mainPath = 'ui/iconGrid/' + char;
+			var spectrePath = 'ui/iconGrid/spectre/' + char;
+
+			var chosenPath:String = null;
+
 			if (char != "none")
 			{
+				// Check if icon exists in main folder
+				if (Assets.exists(Paths.image(mainPath, 'preload'), IMAGE))
+					chosenPath = mainPath;
+				// Else check spectre folder
+				else if (Assets.exists(Paths.image(spectrePath, 'preload'), IMAGE))
+					chosenPath = spectrePath;
+				// Neither found → avoid crash
+				else {
+					trace("ERROR: Icon '" + char + "' not found in iconGrid or spectre!");
+					chosenPath = "blank"; // fallback image
+					loadGraphic(Paths.image(chosenPath, 'shared'));
+					return;
+				}
+
+				// Load the icon
+				loadGraphic(Paths.image(chosenPath, 'preload'), true, 150, 150);
+
 				antialiasing = !noAaChars.contains(char);
 				animation.add(char, [0, 1], 0, false, isPlayer);
 				animation.play(char);
+			}
+			else
+			{
+				loadGraphic(Paths.image('blank', 'shared'));
 			}
 		}
 	}

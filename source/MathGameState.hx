@@ -219,15 +219,18 @@ class MathGameState extends MusicBeatState
             switch (endState)
             {
                case 'won':
-                  PlayState.SONG = Song.loadFromJson('roofs');
-                  PlayState.storyWeek = 7;
-
-                  FlxG.save.data.roofsUnlocked = true;
-                  FlxG.save.flush();
-
-                  FlxG.switchState(new PlayState());
+                  accessThroughTerminal ? FlxG.switchState(new MainMenuState()) : FlxG.switchState(new PlayState()); 
                case 'failed':
-                  accessThroughTerminal ? FlxG.switchState(new MainMenuState()) : FlxG.switchState(new PlayState());      
+	        	  PlayState.SONG = Song.loadFromJson("kys"); // what the fuck did you do
+                  PlayState.SONG.validScore = false;
+                  PlayState.SONG.player2 = "lunagod";
+                  LoadingState.loadAndSwitchState(new PlayState());  
+               case 'hell':
+                  PlayState.SONG = Song.loadFromJson("unethical");
+                  PlayState.SONG.validScore = false;
+		          FlxG.save.data.unethicalFound = true;
+                  PlayState.SONG.player2 = "philtrixpissed";
+                  LoadingState.loadAndSwitchState(new PlayState());
             }
          }
       }
@@ -275,46 +278,69 @@ class MathGameState extends MusicBeatState
       queueAudio(new MathSound(Paths.sound('math/number/BAL_Math_$num2', 'shared'), 1, false));
       queueAudio(new MathSound(Paths.sound('math/BAL_Math_Equals', 'shared'), 1, false));
    }
-   function checkAnswer()
-   {
-      var inputValue = Std.parseFloat(inputField.text);
+    function checkAnswer()
+    {
+       var inputValue = Std.parseFloat(inputField.text);
+   
+       var result:FlxSprite = new FlxSprite(resultPos[curQuestion - 1].x, resultPos[curQuestion - 1].y);
+   
+       // Check for special 666 input
+       if (inputField.text == '666')
+       {
+          FlxG.sound.playMusic(Paths.music('math/mus_hang', 'shared'), 1, false, null);
+          endState = 'hell';
+          endDelay = 3;
+          failedGame = true;
+
+          clearQueue();
+          baldi.animation.play('frown');
       
-      var result:FlxSprite = new FlxSprite(resultPos[curQuestion - 1].x, resultPos[curQuestion - 1].y);
-      if (inputValue == solution)
-      {
-         clearQueue();
-         queueAudio(new MathSound(Paths.sound('math/praise/BAL_Praise${FlxG.random.int(1, 5)}', 'shared'), 1, false));
+          questionText.text = 'SENDING YOU TO HELL';
 
-         result.loadGraphic(Paths.image('math/Check', 'shared'));
-         if (curQuestion == 3)
-         {
-            endDelay = 3;
-            questionText.text = 'WOW! YOU EXIST!';
-            endState = 'won';
-         }
-         else
-         {
-            generateQuestion();
-         }
-      }
-      else
-      {
-         FlxG.sound.playMusic(Paths.music('math/mus_hang', 'shared'), 1, false, null);
-         endState = 'failed';
-         endDelay = 3;
-         failedGame = true;
+          result.loadGraphic(Paths.image('math/X', 'shared'));
+          result.setGraphicSize(83, 83);
+          result.updateHitbox();
+          insert(members.indexOf(yctp), result);
+       }
+       else if (inputValue == solution)
+       {
+          clearQueue();
+          queueAudio(new MathSound(Paths.sound('math/praise/BAL_Praise${FlxG.random.int(1, 5)}', 'shared'), 1, false));
 
-         clearQueue();
-         baldi.animation.play('frown');
-         
-         questionText.text = 'I HEAR MATH THAT BAD';
+          result.loadGraphic(Paths.image('math/Check', 'shared'));
+          if (curQuestion == 3)
+          {
+             endDelay = 3;
+             questionText.text = 'WOW! YOU EXIST!';
+             endState = 'won';
+          }
+          else
+          {
+             generateQuestion();
+          }
+       }
+       else
+       {
+          FlxG.sound.playMusic(Paths.music('math/mus_hang', 'shared'), 1, false, null);
+          endState = 'failed';
+          endDelay = 3;
+          failedGame = true;
 
-         result.loadGraphic(Paths.image('math/X', 'shared'));
-      }
-      result.setGraphicSize(83, 83);
-      result.updateHitbox();
-      insert(members.indexOf(yctp), result);
-   }
+          clearQueue();
+          baldi.animation.play('frown');
+      
+          questionText.text = 'I HEAR MATH THAT BAD';
+
+          result.loadGraphic(Paths.image('math/X', 'shared'));
+       }
+   
+       if (inputValue != solution)
+       {
+          result.setGraphicSize(83, 83);
+          result.updateHitbox();
+          insert(members.indexOf(yctp), result);
+       }
+    }
    function queueAudio(sound:MathSound)
    {
       audioQueue.push(sound);

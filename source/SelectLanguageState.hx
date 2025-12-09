@@ -36,7 +36,7 @@ class SelectLanguageState extends MusicBeatState
       bg.color = langaugeList[curLanguageSelected].langaugeColor;
       add(bg);
 
-      selectLanguage = new FlxText(0, (FlxG.height / 2) - 300, FlxG.width, "Please Select A Language", 45);
+      selectLanguage = new FlxText(0, (FlxG.height / 2) - 300, FlxG.width, "Hi! Welcome to VS Luna, and thanks for downloading!! Have fun, but not too much fun... don't wanna make Luna mad... And more languages are coming soon.", 45);
       selectLanguage.setFormat("Comic Sans MS Bold", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
       selectLanguage.antialiasing = true;
       selectLanguage.borderSize = 2;
@@ -96,7 +96,46 @@ class SelectLanguageState extends MusicBeatState
             FlxFlicker.flicker(currentLanguageText, 1.1, 0.07, true, true, function(flick:FlxFlicker)
 				{
 					FlxG.switchState(new TitleState());
-               FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+                            if (FlxG.save.data.altMenuMusic == 1) // FreakierMenu
+                            {
+                                FlxG.sound.playMusic(Paths.music('freakierMenu'), 0);
+                                Conductor.changeBPM(135);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 2) // NoahEngine
+                            {
+                                FlxG.sound.playMusic(Paths.music('noahEngine'), 0);
+                                Conductor.changeBPM(102);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 3) // Pinecone
+                            {
+                                FlxG.sound.playMusic(Paths.music('pinecone'), 0);
+                                Conductor.changeBPM(293);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 4) // Playstation
+                            {
+                                FlxG.sound.playMusic(Paths.music('playstation'), 0);
+                                Conductor.changeBPM(121);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 5) // Love Songs
+                            {
+                                FlxG.sound.playMusic(Paths.music('loveSongs'), 0);
+                                Conductor.changeBPM(120);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 6) // Jacobs Ladder
+                            {
+                                FlxG.sound.playMusic(Paths.music('jacobsLadder'), 0);
+                                Conductor.changeBPM(146);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 7) // Diddy Blud
+                            {
+                                FlxG.sound.playMusic(Paths.music('diddyBlud'), 0);
+                                Conductor.changeBPM(146);
+                            }
+                            else // FreakyMenu (default)
+                            {
+                                FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+                                Conductor.changeBPM(150);
+                            }
 			      FlxG.sound.music.fadeIn(4, 0, 0.7);
 				});
 			}

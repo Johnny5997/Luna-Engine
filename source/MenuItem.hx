@@ -16,7 +16,7 @@ class MenuItem extends FlxSpriteGroup
 	public function new(x:Float, y:Float, weekNum:Int = 0)
 	{
 		super(x, y);
-		if (weekNum == 5 && !FlxG.save.data.hasPlayedMasterWeek)
+		if (weekNum == 7 && !FlxG.save.data.hasPlayedMasterWeek)
 		{
 			week = new FlxSprite().loadGraphic(Paths.image('storymenu/weekquestionmark'));
 		}

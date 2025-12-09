@@ -12,15 +12,15 @@ using StringTools;
 class CoolUtil
 {
 	public static var difficultyArray:Array<String> = new Array<String>();
-	public static var exploitationDifficulties:Array<String> = ["YOU'RE FUCKED", 'HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA', "YOU CAN'T ESCAPE FROM THE FUN ALREADY", 
-	"EXPUNGED'S REIGN IS HERE, YOU'RE FUCKED", "YOU HAVE REACHED THE END OF THE RABBIT HOLE", "YOU'RE WORTHLESS YOU'RE WORTHLESS YOU'RE WORTHLESS YOU'RE WORTHLESS YOU'RE WORTHLESS", ];
+	public static var exploitationDifficulties:Array<String> = ["YOU'RE FUCKED", "YOU CHEATED", 'HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA', "YOU CAN'T ESCAPE FROM THE FUN ALREADY", 
+	"LUNA'S REIGN IS HERE, YOU'RE FUCKED", "YOU HAVE REACHED THE END OF THE RABBIT HOLE", "YOU'RE WORTHLESS YOU'RE WORTHLESS YOU'RE WORTHLESS YOU'RE WORTHLESS YOU'RE WORTHLESS", ];
 	
 	public static function init()
 	{
 		difficultyArray = new Array<String>();
 		difficultyArray.push(LanguageManager.getTextString('play_easy'));
 		difficultyArray.push(LanguageManager.getTextString('play_normal'));
-		difficultyArray.push(LanguageManager.getTextString('play_hard'));
+		difficultyArray.push('Pussy');
 	}
 
 	public static function difficultyString():String
@@ -32,6 +32,7 @@ class CoolUtil
 			case 16:
 				return exploitationDifficulties[new FlxRandom().int(0, exploitationDifficulties.length - 1)];
 			default:
+				if (PlayState.shaggyVoice && PlayState.storyDifficulty == 0) return 'Canon';
 				return difficultyArray[PlayState.storyDifficulty];
 
 		}

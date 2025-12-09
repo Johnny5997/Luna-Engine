@@ -21,6 +21,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import flixel.effects.FlxFlicker;
 import flixel.tweens.FlxTween;
 import flixel.tweens.misc.ColorTween;
 import flixel.util.FlxStringUtil;
@@ -52,17 +53,35 @@ class CreditsMenuState extends MusicBeatState
    var creditsTypeString:String = '';
    var translatedCreditsType:String = '';
 
+   #if SHADERS_ENABLED
+   var bgShader:Shaders.GlitchEffect;
+   #end
+
    var StupidCameraFollow:FlxObject = new FlxObject();
 
    var curSocialMediaSelected:Int = 0;
    var socialButtons:Array<SocialButton> = new Array<SocialButton>();
    var hasSocialMedia:Bool = true;
+   
+   // Grid navigation variables
+   var gridColumns:Int = 3;
+   var gridRows:Int = 0;
 
    public var DoFunnyScroll:Bool = false;
    
    var peopleInCredits:Array<Person> = 
    [
       // Developers //
+      new Person("Johnny5997", CreditsType.Dev,
+      [
+         new Social('youtube', 'https://www.youtube.com/@Johnny5997YT'), 
+         new Social('twitter', 'https://x.com/JohnnyPlayz5997'),
+         new Social('roblox', 'https://www.roblox.com/users/658952463/profile'),
+         new Social('applemusic', 'https://music.apple.com/us/artist/johnny-playz-5997/1689400751'),
+         new Social('spotify', 'https://open.spotify.com/artist/5RYPgLozoYGux3QWMsg5BM'),
+         new Social('soundcloud', 'https://soundcloud.com/johnny-playz-gd')
+      ]),
+
       new Person("MoldyGH", CreditsType.Dev,
       [
          new Social('youtube', 'https://www.youtube.com/channel/UCHIvkOUDfbMCv-BEIPGgpmA'), 
@@ -83,304 +102,85 @@ class CreditsMenuState extends MusicBeatState
          new Social('youtube', 'https://www.youtube.com/channel/UCKfdkmcdFftv4pFWr0Bh45A'),
          new Social('twitter', 'https://twitter.com/rappareplol')
       ]),
-
-      new Person("TheBuilderXD", CreditsType.Dev,
-      [
-         new Social('youtube', 'https://www.youtube.com/user/99percentMember'),
-         new Social('twitter', 'https://twitter.com/TheBuilderXD')
-      ]),
-
-      new Person("Erizur", CreditsType.Dev,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCdCAaQzt9yOGfFM0gJDJ4bQ'),
-         new Social('twitter', 'https://twitter.com/am_erizur')
-      ]),
-      
-      new Person("T5mpler", CreditsType.Dev,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCgNoOsE_NDjH6ac4umyADrw'),
-         new Social('twitter', 'https://twitter.com/RealT5mpler'),
-         new Social('soundcloud', 'https://soundcloud.com/t5mpler')
-      ]),
-      new Person("Zmac", CreditsType.Dev,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCl50Xru1nLBENuLiQBt6VRg')
-      ]),
-      new Person("pointy", CreditsType.Dev,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCRKMTB-VvZlXig4gChk5jtg'),
-         new Social('twitter', 'https://twitter.com/PointyyESM')
-      ]),
-      new Person("Billy Bobbo", CreditsType.Dev,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCWbxUPrpRb3lWFHULkmR0IQ'),
-         new Social('twitter', 'https://twitter.com/BillyBobboLOL')
-      ]),
-
-      // Translators //
-      
-      new Person("dani", CreditsType.Translator,
-      [
-         new Social('youtube', 'https://youtube.com/channel/UCzCcYbUwbtSJcAQH0IZl-pA'),
-         new Social('twitter', 'https://twitter.com/danicheese99')
-      ]),
-      
-      new Person("Aizakku", CreditsType.Translator,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCmSCR85PlhbHGHm-wxiA6sA'),
-         new Social('twitter', 'https://twitter.com/ItsAizakku')
-      ]),
-      
-      new Person("Soulegal", CreditsType.Translator,
-      [
-            new Social('youtube', 'https://www.youtube.com/channel/UC7VSf4ITAMN83hL3zQbqt3w'),
-            new Social('twitter', 'https://twitter.com/nickstwt')
-      ]),
       
       // Contributors //
-      new Person("Steph45", CreditsType.Contributor,
+      new Person("Luna", CreditsType.Contributor,
       [
-         new Social('youtube', 'https://www.youtube.com/channel/UClb4YjR8i74G-ue2nyiH2DQ')
+         new Social('youtube', 'https://www.youtube.com/@lunathekitten_')
       ]),
-      new Person("evdial", CreditsType.Contributor,
+      new Person("Noah", CreditsType.Contributor,
       [
-
-      ]),
-      new Person("wugalex", CreditsType.Contributor,
-      [
-         
-      ]),
-      new Person("Jukebox", CreditsType.Contributor,
-      [
-         new Social('twitter', 'https://twitter.com/Juk3b0x_'),
-         new Social('youtube', 'https://www.youtube.com/channel/UCwA3jnG5cu3toaVCOhc-Tqw'),
-      ]),
-      
-      new Person("Oxygen", CreditsType.Contributor,
-      [
-         new Social('soundcloud', 'https://soundcloud.com/oxygendude2000'),
-         new Social('twitter', 'https://twitter.com/oxygenboi2000'),
-         new Social('youtube', 'https://youtube.com/channel/UCgTW7cQcfqduIqlu-bSZGZg')
-      ]),
-      new Person("Alexander Cooper 19", CreditsType.Contributor,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCNz20AHJq41rkBUsq8RmUfQ'),
-         new Social('twitter', 'https://twitter.com/Zander_cooper19')
+         new Social('youtube', 'https://www.youtube.com/@gdnoahplayz'),
+         new Social('twitter', 'https://x.com/GDNoah_'),
+         new Social('roblox', 'https://www.roblox.com/users/2032836347/profile')
       ]),
       new Person("Aadsta", CreditsType.Contributor,
       [
          new Social('twitter', 'https://twitter.com/FullNameDeTrain')
       ]),
-      new Person("Project Tea", CreditsType.Contributor,
-      [
-         new Social('youtube', 'https://youtube.com/c/ProjectTea'),
-         new Social('discord', 'Project Tea#9139'),
-      ]),
       new Person("Top 10 Awesome", CreditsType.Contributor,
       [
          new Social('youtube', 'https://www.youtube.com/c/Top10Awesome')
       ]),
-      new Person("BombasticHype", CreditsType.Contributor,
-      [  
-         new Social ('youtube', 'https://www.youtube.com/c/BombasticHype')
-      ]),
-      new Person("Sky!", CreditsType.Contributor,
-      [  
-         new Social ('youtube', 'https://www.youtube.com/c/Grantare'),
-      ]),
       new Person("Ruby", CreditsType.Contributor,
       [  
-         new Social ('youtube', 'https://youtube.com/c/RubysArt_'),
-         new Social ('twitter', 'https://twitter.com/RubysArt_')
+         new Social ('youtube', 'https://www.youtube.com/@rubymaze56')
+      ]),
+      new Person("Kaash Paige", CreditsType.Contributor,
+      [  
+         new Social ('youtube', 'https://www.youtube.com/channel/UCqLcZ9ksQuE3QIf-pNCVSjA'),
+         new Social('twitter', 'https://x.com/kaashmychecks?lang=en'),
+         new Social('applemusic', 'https://music.apple.com/us/artist/kaash-paige/1443645944'),
+         new Social('spotify', 'https://open.spotify.com/artist/0f2YkMXwFNJNSX7MymevKE'),
+         new Social('soundcloud', 'https://soundcloud.com/KAASHMYCHECKS')
+      ]),
+      new Person("Remove.BG", CreditsType.Contributor,
+      [  
+         new Social ('removebg', 'https://www.remove.bg')
       ]),
       new Person("Lancey", CreditsType.Contributor,
       [  
          new Social('youtube', 'https://youtube.com/c/Lancey170'),
          new Social('twitter', 'https://twitter.com/Lancey170')
       ]),
-      new Person("Cup", CreditsType.Contributor,
-      [  
-         new Social('youtube', 'https://youtube.com/channel/UCEeVFDTzxe2K8dMng_7YU7A'),
-      ]),
-      new Person("ShiftyTM", CreditsType.Contributor,
-      [  
-         new Social('youtube', 'https://youtube.com/channel/UC8NHfjpy6tNWgnM7889S1Ew'),
-      ]),
-      
-      new Person("Paraso", CreditsType.Contributor,
-      [  
-
-      ]),
-      new Person("SAMMYPIGZY", CreditsType.Contributor,
-      [  
-         new Social('youtube', 'https://www.youtube.com/channel/UCVbNlXsQ-9WA2WcN8u2se_Q'),
-         new Social('twitter', 'https://twitter.com/TH3_R34L_D34L')
-      ]),
-      
-      new Person("R34LD34L", CreditsType.Contributor,
-      [  
-
-      ]),
-      
-      new Person("Devianator", CreditsType.Contributor,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCcaYOWO98UIsJ54t_aV6JHw'),
-         new Social('twitter', 'https://twitter.com/devianator404')
-      ]),
-      
-      new Person("sk0rbias", CreditsType.Contributor,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCTz8DmuC85UN_nspzp3d_VA'),
-         new Social('twitter', 'https://twitter.com/sk0rbias')
-      ]),
-      new Person("Your mom", CreditsType.Contributor,
-      [  
-         new Social('youtube', 'https://www.youtube.com/channel/UCeYxPL7ClfwXOOrpbtqJ13g'),
-      ]),
-
       new Person("sibottle", CreditsType.Contributor,
       [  
          new Social('youtube', 'https://www.youtube.com/channel/UCqFkjwmaYlnVXwLMw3_AXLA'),
       ]),
+      new Person("4k Funny", CreditsType.Contributor,
+      [  
 
-      new Person("chromasen", CreditsType.Contributor,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCgGk4oZt3We-ktkEOV9HY1Q'),
+      ]),
+      new Person("Cynda", CreditsType.Contributor,
+      [  
+         new Social('youtube', 'https://www.youtube.com/channel/UCTaq4jni33NoaI1TfMXCRcA'),
+      ]),
+      new Person("Maevings", CreditsType.Contributor,
+      [  
+
+      ]),
+      new Person("Instagram", CreditsType.Contributor,
+      [  
+         new Social('instagram', 'https://www.instagram.com'),
       ]),
 
       // Beta Testers //
-      new Person("letsy", CreditsType.BetaTester,
+      new Person("Noah", CreditsType.BetaTester,
       [
-         new Social('youtube', 'https://www.youtube.com/channel/UCPsNWR6RYLRvpDZinADtJ8w'),
-         new Social('twitter', 'https://twitter.com/Iesty19'),
-         new Social('discord', 'ietsy#5140')
+         new Social('youtube', 'https://www.youtube.com/@gdnoahplayz'),
+         new Social('twitter', 'https://x.com/GDNoah_'),
+         new Social('roblox', 'https://www.roblox.com/users/2032836347/profile')
       ]),
-      new Person("wildy", CreditsType.BetaTester,
+      new Person("Spencer", CreditsType.BetaTester,
       [
-         new Social('youtube', 'https://www.youtube.com/channel/UCrUhQeLDv7lpZifWfPr4uGQ'),
-         new Social('twitter', 'https://twitter.com/wildythomas1233')
-         
+
       ]),
 
-      new Person("peejeada", CreditsType.BetaTester,
+      //extra keys addon creator
+      new Person("Magman", CreditsType.EKACreator,
       [
-         new Social('twitter', 'https://twitter.com/tailsmaster1')
-      ]),
-      
-      new Person("bendygaming_1", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCDgAtfpjDW1F2LAk6LzgavA')
-      ]),
-      new Person("YourAverageMental", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCDgAtfpjDW1F2LAk6LzgavA')
-      ]),
-      new Person("vex", CreditsType.BetaTester,
-      [
-         new Social('twitter', 'https://twitter.com/vex________')
-      ]),
-      new Person("xml", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCL5UPJDEFDZLo4D62pcmIBQ'),
-         new Social('twitter', 'https://twitter.com/AstrayFile')
-      ]),
-      
-      new Person("ztgds", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCUmuZE0RPjvUhB036T6omfQ')
-      ]),
-      new Person("ashtonyes", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCQkB-JEx7OGdOUxPzcgUkkQ'),
-         new Social('gamebanana', 'https://gamebanana.com/members/1943292')
-      ]),
-      new Person("Silver Escaper", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCP9McVE9T5K3pzum48-m6Tg'),
-         new Social('roblox', 'https://www.roblox.com/users/2546405173/profile'),
-         new Social('discord', 'Silver Escaper#8220')
-      ]),
-
-      new Person("TrustVVorthy", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UC_lJmvYgeAwzcYaeYXlZ7vg')
-      ]),
-      
-      new Person("Gorbini", CreditsType.BetaTester,
-      [
-         new Social("youtube", 'https://www.youtube.com/channel/UC1u46mYMoecfO04dm-9Djjg')
-      ]),
-
-      new Person("Log Man", CreditsType.BetaTester,
-      [
-         new Social('twitter', 'https://twitter.com/LogManLoggy'),
-         new Social('youtube', 'https://www.youtube.com/channel/UCnGg-cLnXuQNfSzIq6xF8hw'),
-      ]),
-
-      new Person("Mooncakeez", CreditsType.BetaTester, 
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UC6lOrY3AkmXWFpaLHwlP-5A')
-      ]),
-      
-      new Person("Foxnap", CreditsType.BetaTester,
-      [
-         new Social("youtube", 'https://www.youtube.com/channel/UCFMq8C3d6QvZlzR8vBBnITg'),
-         new Social('twitter', 'https://twitter.com/Foxnap2')
-      ]),
-      
-      new Person("lotuswaterz", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCf0Y-SfRxhrVnggHwwz1CnA'),
-         new Social('twitter', 'https://twitter.com/NIHIILISTIC'),
-      ]),
-
-      new Person("mantis", CreditsType.BetaTester,
-      [
-         new Social('discord', 'mantis#6969')
-      ]),
-      
-      new Person("ArturSef", CreditsType.BetaTester, 
-      [  
-         new Social('gamebanana', 'https://gamebanana.com/members/1766076')
-      ]),
-      
-      new Person("normal", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UC21TRNz6llg8a6-ur4dSBtw'),
-         new Social('roblox', 'https://www.roblox.com/users/1368920745')
-      ]),
-
-      new Person("Rendurse", CreditsType.BetaTester,
-      [
-         new Social('twitter', 'https://twitter.com/RendurseDev')
-      ]),
-      new Person("Lordryan1999", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UCEdSlV8RvVnEd8w_yQz-Feg'),
-         new Social('twitter', 'https://twitter.com/lr1999_baldi')
-      ]),
-      new Person("Vanquiler", CreditsType.BetaTester,
-      [
-         new Social('discord', 'Vanquiler#3026'),
-         new Social('twitch', 'https://www.twitch.tv/vanquiler'),
-         new Social('roblox', 'https://www.roblox.com/users/1505830747')
-      ]),
-      new Person("Villezen", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/c/Villezen')
-      ]),
-      new Person("TecheVent", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/c/Villezen')
-      ]),
-      new Person("miko", CreditsType.BetaTester,
-      [
-         new Social('youtube', 'https://www.youtube.com/channel/UC3mIybwSekVs5VEJSe2yjog')
-      ]),
-      new Person("Cotiles", CreditsType.BetaTester,
-      [
-         new Social('twitter', 'https://twitter.com/Ctiles1'),
-         new Social('youtube', 'https://www.youtube.com/channel/UClNnrTqtgzAQ16w4_eC7rwA'),
+         new Social('youtube', 'https://www.youtube.com/channel/UC1IWpXJIB0wYTCnQI0E9HMQ'),
+         new Social('twitter', 'https://twitter.com/magar_manh')
       ]),
 	  // Special Thanks //
      new Person("You!", CreditsType.SpecialThanks, [])
@@ -410,15 +210,22 @@ class CreditsMenuState extends MusicBeatState
 
       if (!DoFunnyScroll)
       {
-         bg.loadGraphic(MainMenuState.randomizeBG());
-         bg.color = FlxColor.LIME;
-         bg.scrollFactor.set();
-         add(bg);
+		  var menuBG:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('backgrounds/void/mainmenubgcredits', 'shared'));
+		  menuBG.scrollFactor.set();
+		  menuBG.antialiasing = false;
+		  add(menuBG);
 
-
-         overlay.color = FlxColor.LIME;
-         overlay.scrollFactor.set();
-         add(overlay);
+		  #if SHADERS_ENABLED
+		  bgShader = new Shaders.GlitchEffect();
+		  bgShader.waveAmplitude = 0.1;
+		  bgShader.waveFrequency = 5;
+		  bgShader.waveSpeed = 2;
+		  menuBG.shader = bgShader.shader;
+		  #end
+  
+          overlay.color = FlxColor.LIME;
+          overlay.scrollFactor.set();
+          add(overlay);
       }
       else
       {
@@ -435,6 +242,7 @@ class CreditsMenuState extends MusicBeatState
       var contributors:Array<Person> = new Array<Person>();
       var betaTesters:Array<Person> = new Array<Person>();
       var specialThanks:Array<Person> = new Array<Person>();
+      var ekaCreator:Array<Person> = new Array<Person>();
 
       for (person in peopleInCredits) 
       {
@@ -445,13 +253,14 @@ class CreditsMenuState extends MusicBeatState
             case Contributor: contributors.push(person);
             case BetaTester: betaTesters.push(person);
             case SpecialThanks: specialThanks.push(person);
+            case EKACreator: ekaCreator.push(person);
          }
       }
 
       for (i in 0...peopleInCredits.length)
       {
          var currentPerson = peopleInCredits[i];
-         if (currentPerson == developers[0] || currentPerson == translators[0] || currentPerson == contributors[0] || currentPerson == betaTesters[0] || currentPerson == specialThanks[0])
+         if (currentPerson == developers[0] || currentPerson == translators[0] || currentPerson == contributors[0] || currentPerson == betaTesters[0] || currentPerson == specialThanks[0] || currentPerson == ekaCreator[0])
          {
             switch (currentPerson.creditsType)
             {
@@ -470,6 +279,9 @@ class CreditsMenuState extends MusicBeatState
                case SpecialThanks:
                   creditsTypeString = 'Special Thanks';
                   translatedCreditsType = LanguageManager.getTextString('credits_specialThanks');
+               case EKACreator:
+                  creditsTypeString = 'Extra Keys Addon Creator';
+                  translatedCreditsType = LanguageManager.getTextString('credits_ekaCreator');
             }
             var titleText:FlxText = new FlxText(0, 0, 0, translatedCreditsType);
             titleText.setFormat("Comic Sans MS Bold", 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -496,15 +308,22 @@ class CreditsMenuState extends MusicBeatState
          var textItem:FlxText = new FlxText(0, i * 50, 0, currentPerson.name, 32);
          textItem.setFormat(defaultFormat.font, defaultFormat.size, defaultFormat.color, defaultFormat.alignment, defaultFormat.borderStyle, defaultFormat.borderColor);
          textItem.screenCenter(X);
+         // Shift text left during DoFunnyScroll to center text+icon combo
+         if (DoFunnyScroll)
+         {
+            textItem.x -= 60;
+         }
 		   textItem.antialiasing = true;
          textItem.scrollFactor.set(0, 1);
 
-         var personIcon:PersonIcon = new PersonIcon(textItem);
+         var personIcon:PersonIcon = new PersonIcon(textItem, DoFunnyScroll);
          personIcon.loadGraphic(Paths.image('credits/icons/' + creditsTypeString + '/' + currentPerson.name));
          add(personIcon);
 
-         personIcon.visible = !DoFunnyScroll;
+         // Icons now visible during DoFunnyScroll
+         personIcon.visible = true;
          personIcon.antialiasing = true;
+         if (currentPerson.name == 'Magman') personIcon.antialiasing = false;
 
          var creditsTextItem:CreditsText = new CreditsText(textItem, true, personIcon);
 
@@ -529,11 +348,11 @@ class CreditsMenuState extends MusicBeatState
       }
 
       StupidCameraFollow.x = menuItems[0].text.x;
-      StupidCameraFollow.y = menuItems[0].text.y - 460; //so close yet so far from having the offset be 420 :(
+      StupidCameraFollow.y = menuItems[0].text.y - 460;
       if (DoFunnyScroll)
       {
-         //(FlxG.sound.music.length / 1000) - 15
-         FlxTween.tween(StupidCameraFollow, {y : (menuItems[menuItems.length - 1].text.y + 440)}, (FlxG.sound.music.length / 1000) - 10.5, {ease: FlxEase.linear, onComplete: function(tween:FlxTween)
+         // Increased scroll speed by reducing duration (was music.length / 1000 - 10.5, now - 3.5)
+         FlxTween.tween(StupidCameraFollow, {y : (menuItems[menuItems.length - 1].text.y + 440)}, (FlxG.sound.music.length / 1000) - 3.5, {ease: FlxEase.linear, onComplete: function(tween:FlxTween)
          {
             var logoBl:FlxSprite = new FlxSprite(StupidCameraFollow.x, StupidCameraFollow.y);
             logoBl.frames = Paths.getSparrowAtlas('ui/logoBumpin');
@@ -566,8 +385,14 @@ class CreditsMenuState extends MusicBeatState
       var fadeTimer:Float = 0.08;
       var upPressed = controls.UP_P;
 		var downPressed = controls.DOWN_P;
+		var leftPressed = controls.LEFT_P;
+		var rightPressed = controls.RIGHT_P;
 		var back = controls.BACK;
 		var accept = controls.ACCEPT;
+		#if SHADERS_ENABLED
+		if (bgShader != null)
+			bgShader.shader.uTime.value[0] += elapsed;
+		#end
       if (DoFunnyScroll)
       {
          FlxG.camera.follow(StupidCameraFollow, 0.1);
@@ -593,6 +418,7 @@ class CreditsMenuState extends MusicBeatState
             }
 				if (back)
 				{
+        			FlxG.sound.play(Paths.sound('cancelMenu'));
 					FlxG.switchState(new MainMenuState());
 				}
 				if (accept && !transitioning)
@@ -619,6 +445,7 @@ class CreditsMenuState extends MusicBeatState
             if (back && !transitioning)
             {
                transitioning = true; 
+        	   FlxG.sound.play(Paths.sound('cancelMenu'));
                for (item in selectedPersonGroup)
                {
                   FlxTween.tween(item, {alpha: 0}, fadeTimer);
@@ -663,22 +490,85 @@ class CreditsMenuState extends MusicBeatState
             }
             if (hasSocialMedia)
             {
+               // 2D Grid Navigation
                if (upPressed)
                {
-                    changeSocialMediaSelection(-1);
+                  changeSocialMediaSelection2D(0, -1);
                }
                if (downPressed)
                {
-                  changeSocialMediaSelection(1);
+                  changeSocialMediaSelection2D(0, 1);
                }
-               if (accept)
+               if (leftPressed)
                {
-                  var socialButton = socialButtons[curSocialMediaSelected];
-                  if (socialButton != null && socialButton.socialMedia.socialMediaName != 'discord')
-                  {
-                     FlxG.openURL(socialButton.socialMedia.socialLink);
-                  }
+                  changeSocialMediaSelection2D(-1, 0);
                }
+               if (rightPressed)
+               {
+                  changeSocialMediaSelection2D(1, 0);
+               }
+               
+                if (accept && !transitioning)
+                {
+                    var socialButton = socialButtons[curSocialMediaSelected];
+                    if (socialButton != null)
+                    {
+                        transitioning = true;
+                        var targetLink:String = socialButton.socialMedia.socialLink;
+
+                        for (button in socialButtons)
+                        {
+                            for (graphic in button.graphics)
+                            {
+                                if (button != socialButton)
+                                {
+                                    // Fade out other buttons
+                                    FlxTween.tween(graphic, { alpha: 0 }, 0.8, { ease: FlxEase.quadOut });
+                                }
+                                else
+                                {
+                                    // Animate the selected button
+                                    FlxG.sound.play(Paths.sound('confirmMenu'));
+                                    FlxTween.tween(graphic.scale, { x: 1.25, y: 1.25 }, 0.35, {
+                                        ease: FlxEase.quadOut,
+                                        onComplete: function(_)
+                                        {
+                                            FlxTween.tween(graphic.scale, { x: 1, y: 1 }, 0.2, { ease: FlxEase.quadIn });
+                                        }
+                                    });
+
+                                    // Flicker before opening
+                                    FlxFlicker.flicker(graphic, 1, 0.06, false, false, function(_)
+                                    {
+                                        // Ensure the selected button is visible again after flicker
+                                        graphic.visible = true;
+                                        graphic.alpha = 1;
+
+                                        // Open the webpage
+                                        FlxG.openURL(targetLink);
+
+                                        // Reset all buttons to normal after short delay
+                                        new FlxTimer().start(0.5, function(_)
+                                        {
+                                            for (b in socialButtons)
+                                            {
+                                                for (g in b.graphics)
+                                                {
+                                                    // Restore visibility and normal appearance
+                                                    g.visible = true;
+                                                    g.alpha = 1;
+                                                    g.scale.set(1, 1);
+                                                    FlxTween.tween(g, { alpha: 1 }, 0.3, { ease: FlxEase.quadOut });
+                                                }
+                                            }
+                                            transitioning = false;
+                                        });
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
             }
       }
       
@@ -703,6 +593,7 @@ class CreditsMenuState extends MusicBeatState
       FlxG.camera.follow(menuItems[curNameSelected].text, 0.1);
       updateText(curNameSelected);
    }
+   
    function changeSocialMediaSelection(amount:Int = 0)
    {
       if (amount != 0)
@@ -719,6 +610,80 @@ class CreditsMenuState extends MusicBeatState
          curSocialMediaSelected = socialButtons.length - 1;
       }
       updateSocialMediaUI();
+   }
+   
+   function changeSocialMediaSelection2D(xDir:Int, yDir:Int)
+   {
+      if (xDir == 0 && yDir == 0) return;
+      
+      var currentRow = Std.int(curSocialMediaSelected / gridColumns);
+      var currentCol = curSocialMediaSelected % gridColumns;
+      
+      var newRow = currentRow + yDir;
+      var newCol = currentCol + xDir;
+      
+      // Handle wrapping for columns
+      if (newCol < 0)
+      {
+         // Get the row we're trying to move to
+         var targetRow = currentRow;
+         var rowStart = targetRow * gridColumns;
+         var rowEnd = Std.int(Math.min(rowStart + gridColumns, socialButtons.length));
+         var rowCount = rowEnd - rowStart;
+         newCol = rowCount - 1; // Wrap to last item in current row
+      }
+      else if (newCol >= gridColumns)
+      {
+         newCol = 0; // Wrap to first column
+      }
+      else
+      {
+         // Check if this column exists in the target row
+         var targetIndex = newRow * gridColumns + newCol;
+         if (targetIndex >= socialButtons.length || targetIndex < 0)
+         {
+            // If we're at the edge of a shorter row, wrap to the start of that row
+            if (newCol > 0)
+            {
+               newCol = 0;
+            }
+         }
+      }
+      
+      // Handle wrapping for rows
+      if (newRow < 0)
+      {
+         newRow = gridRows - 1; // Wrap to last row
+         // Make sure the column exists in the last row
+         var lastRowStart = newRow * gridColumns;
+         var lastRowEnd = socialButtons.length;
+         var lastRowCount = lastRowEnd - lastRowStart;
+         if (newCol >= lastRowCount)
+         {
+            newCol = lastRowCount - 1;
+         }
+      }
+      else if (newRow >= gridRows)
+      {
+         newRow = 0; // Wrap to first row
+      }
+      
+      var newIndex = newRow * gridColumns + newCol;
+      
+      // Validate the new index
+      if (newIndex >= 0 && newIndex < socialButtons.length)
+      {
+         // Check if we're trying to move to a position that doesn't exist in this row
+         var rowStart = newRow * gridColumns;
+         var rowEnd = Std.int(Math.min(rowStart + gridColumns, socialButtons.length));
+         
+         if (newIndex >= rowStart && newIndex < rowEnd)
+         {
+            FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+            curSocialMediaSelected = newIndex;
+            updateSocialMediaUI();
+         }
+      }
    }
 
    function updateText(index:Int)
@@ -825,62 +790,89 @@ class CreditsMenuState extends MusicBeatState
          }
       }});
       
-      for (i in 0...selectedPerson.socialMedia.length)
-      {
-         var social:Social = selectedPerson.socialMedia[i];
-         var socialGraphic:FlxSprite = new FlxSprite(0, credits.y + 100 + (i * 100)).loadGraphic(Paths.image('credits/socialMedia/' + social.socialMediaName));
-         var discordText:FlxText = null;
-         socialGraphic.updateHitbox();
-         socialGraphic.screenCenter(X);
-         socialGraphic.scrollFactor.set();
-         socialGraphic.active = false;
-         socialGraphic.alpha = 0;
-         add(socialGraphic);
+// Grid settings
+var columns:Int = 3; // max per row
+gridColumns = columns; // Store for navigation
+var spacingX:Int = 150;
+var spacingY:Int = 120;
+var startY:Float = credits.y + 100;
 
-         if (social.socialMediaName == 'discord')
-         {
-            var offsetY:Float = 20;
-            discordText = new FlxText(socialGraphic.x + 100, socialGraphic.y + (i * 100) + offsetY, 0, social.socialLink, 40);
-            discordText.setFormat(defaultFormat.font, defaultFormat.size, defaultFormat.color, defaultFormat.alignment, defaultFormat.borderStyle, defaultFormat.borderColor);
-            discordText.alpha = 0;
-            discordText.updateHitbox();
-            discordText.scrollFactor.set();
-			discordText.antialiasing = true;
-            discordText.active = false;
-            add(discordText);
-            FlxTween.tween(discordText, { alpha: 1 }, fadeTime);
-            selectedPersonGroup.add(discordText);
-         }
+// Calculate grid rows
+gridRows = Math.ceil(selectedPerson.socialMedia.length / columns);
 
-         var socialButton:SocialButton;
-         
-         if (discordText != null)
-         {
-            socialButton = new SocialButton([socialGraphic, discordText], social);
-         }
-         else
-         {
-            socialButton = new SocialButton([socialGraphic], social);
-         }
-         socialButtons.push(socialButton);
-         selectedPersonGroup.add(socialGraphic);
-         
-         var isCurrentSelectedButton = socialButton == socialButtons[curSocialMediaSelected];
-         var targetAlpha = isCurrentSelectedButton ? 1 : 0.3;
+for (i in 0...selectedPerson.socialMedia.length)
+{
+    var social:Social = selectedPerson.socialMedia[i];
 
-         if (i == selectedPerson.socialMedia.length - 1)
-         {
-            FlxTween.tween(socialGraphic, { alpha: targetAlpha }, fadeTime, { onComplete: function(tween:FlxTween)
+    // Row calculation
+    var row:Int = Std.int(i / columns);
+    var rowStart:Int = row * columns;
+    var rowEnd:Int = Std.int(Math.min(rowStart + columns, selectedPerson.socialMedia.length));
+    var rowCount:Int = rowEnd - rowStart;
+
+    // Column within THIS row (not global)
+    var colInRow:Int = i - rowStart;
+
+    // Row width (so we can center it)
+    var rowWidth:Float = (rowCount - 1) * spacingX;
+
+    var socialGraphic:FlxSprite = new FlxSprite().loadGraphic(
+        Paths.image('credits/socialMedia/' + social.socialMediaName)
+    );
+
+    // Position in a centered grid
+    socialGraphic.x = (FlxG.width / 2.31 - rowWidth / 2.31) + colInRow * spacingX;
+    socialGraphic.y = startY + row * spacingY;
+
+    socialGraphic.updateHitbox();
+    socialGraphic.scrollFactor.set();
+    socialGraphic.active = false;
+    socialGraphic.alpha = 0;
+    add(socialGraphic);
+
+    // Special case: Discord with text
+    var discordText:FlxText = null;
+    if (social.socialMediaName == 'discord')
+    {
+        discordText = new FlxText(socialGraphic.x + 100, socialGraphic.y, 0, social.socialLink, 40);
+        discordText.setFormat(defaultFormat.font, defaultFormat.size, defaultFormat.color,
+            defaultFormat.alignment, defaultFormat.borderStyle, defaultFormat.borderColor);
+        discordText.alpha = 0;
+        discordText.updateHitbox();
+        discordText.scrollFactor.set();
+        discordText.antialiasing = true;
+        discordText.active = false;
+        add(discordText);
+        FlxTween.tween(discordText, { alpha: 1 }, fadeTime);
+        selectedPersonGroup.add(discordText);
+    }
+
+    var socialButton:SocialButton = (discordText != null)
+        ? new SocialButton([socialGraphic, discordText], social)
+        : new SocialButton([socialGraphic], social);
+
+    socialButtons.push(socialButton);
+    selectedPersonGroup.add(socialGraphic);
+
+    var isCurrentSelectedButton = socialButton == socialButtons[curSocialMediaSelected];
+    var targetAlpha = isCurrentSelectedButton ? 1 : 0.3;
+
+    if (i == selectedPerson.socialMedia.length - 1)
+    {
+        FlxTween.tween(socialGraphic, { alpha: targetAlpha }, fadeTime, {
+            onComplete: function(tween:FlxTween)
             {
-               transitioning = false;
-               state = State.OnName;
-            }});
-         }
-         else
-         {
-            FlxTween.tween(socialGraphic, { alpha: targetAlpha }, fadeTime);
-         }
-      }
+                transitioning = false;
+                state = State.OnName;
+            }
+        });
+    }
+    else
+    {
+        FlxTween.tween(socialGraphic, { alpha: targetAlpha }, fadeTime);
+    }
+}
+
       hasSocialMedia = socialButtons.length != 0;
    }
 }
@@ -926,10 +918,12 @@ class CreditsText
 class PersonIcon extends FlxSprite
 {
    public var tracker:FlxObject;
+   public var doFunnyScroll:Bool;
 
-   public function new(tracker:FlxObject)
+   public function new(tracker:FlxObject, doFunnyScroll:Bool = false)
    {
       this.tracker = tracker;
+      this.doFunnyScroll = doFunnyScroll;
       super();
    }
    public override function update(elapsed:Float)
@@ -940,7 +934,9 @@ class PersonIcon extends FlxSprite
          var biggerValue = Math.max(tracker.height, height);
          var smallerValue = Math.min(tracker.height, height);
 
-         setPosition(tracker.x + tracker.width + 20, tracker.y + (smallerValue - biggerValue) / 2);
+         // Move icon closer to text during DoFunnyScroll (was 20, now 10)
+         var spacing = doFunnyScroll ? -130 : 20;
+         setPosition(tracker.x + tracker.width + spacing, tracker.y + (smallerValue - biggerValue) / 2);
       }
    }
 }
@@ -957,7 +953,7 @@ class SocialButton
 }
 enum CreditsType
 {
-   Dev; Translator; Contributor; BetaTester; SpecialThanks;
+   Dev; Translator; Contributor; BetaTester; SpecialThanks; EKACreator;
 }
 enum State
 {

@@ -60,12 +60,6 @@ class OutdatedSubState extends MusicBeatState
 			FlxG.save.data.eyesores = true;
 			leaveState();
 		}
-		if (FlxG.keys.justPressed.N && FlxG.save.data.begin_thing != true || FlxG.keys.justPressed.ENTER && FlxG.save.data.begin_thing != true)
-		{
-			FlxG.save.data.begin_thing = true;
-			FlxG.save.data.eyesores = false;
-			leaveState();	
-		}
 		super.update(elapsed);
 	}
 	function leaveState()

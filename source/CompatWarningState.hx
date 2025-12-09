@@ -17,8 +17,8 @@ class CompatWarningState extends MusicBeatState
     var warningBox:FlxText;
     var textItems:Array<FlxText> = new Array<FlxText>();
     var curSelected:Int;
-    var optionArray:Array<Int> = [1, 0]; //Yes, No
-    var optionTranslate:Array<String> = [LanguageManager.getTextString("compat_yes"), LanguageManager.getTextString("compat_no")];
+    var optionArray:Array<Int> = [1, 0]; //Yes, Only yes now hehe -johnny
+    var optionTranslate:Array<String> = [LanguageManager.getTextString("compat_yes")];
     var currentText:FlxText;
     var accepted:Bool;
 
@@ -74,17 +74,48 @@ class CompatWarningState extends MusicBeatState
                     FlxFlicker.flicker(currentText, 1.1, 0.07, true, true, function(flick:FlxFlicker)
                     {
                         FlxG.switchState(new TitleState());
-                        FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+                            if (FlxG.save.data.altMenuMusic == 1) // FreakierMenu
+                            {
+                                FlxG.sound.playMusic(Paths.music('freakierMenu'), 0);
+                                Conductor.changeBPM(135);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 2) // NoahEngine
+                            {
+                                FlxG.sound.playMusic(Paths.music('noahEngine'), 0);
+                                Conductor.changeBPM(102);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 3) // Pinecone
+                            {
+                                FlxG.sound.playMusic(Paths.music('pinecone'), 0);
+                                Conductor.changeBPM(293);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 4) // Playstation
+                            {
+                                FlxG.sound.playMusic(Paths.music('playstation'), 0);
+                                Conductor.changeBPM(121);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 5) // Love Songs
+                            {
+                                FlxG.sound.playMusic(Paths.music('loveSongs'), 0);
+                                Conductor.changeBPM(120);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 6) // Jacobs Ladder
+                            {
+                                FlxG.sound.playMusic(Paths.music('jacobsLadder'), 0);
+                                Conductor.changeBPM(146);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 7) // Diddy Blud
+                            {
+                                FlxG.sound.playMusic(Paths.music('diddyBlud'), 0);
+                                Conductor.changeBPM(146);
+                            }
+                            else // FreakyMenu (default)
+                            {
+                                FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+                                Conductor.changeBPM(150);
+                            }
                         FlxG.sound.music.fadeIn(4, 0, 0.7);
                     });
-                }
-                if (controls.LEFT_P)
-                {
-                    changeSelection(-1);
-                }
-                if (controls.RIGHT_P)
-                {
-                    changeSelection(1);
                 }
             }
     }
