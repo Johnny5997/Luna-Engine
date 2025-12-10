@@ -132,6 +132,9 @@ class OptionsSubMenu extends MusicBeatState
 						FlxG.save.data.altMenuMusic == 5 ? "Menu Music: Love Songs" :
 						FlxG.save.data.altMenuMusic == 6 ? "Menu Music: Jacobs Ladder" :
 						FlxG.save.data.altMenuMusic == 7 ? "Menu Music: Diddy Blud" :
+						FlxG.save.data.altMenuMusic == 8 ? "Menu Music: She Will" :
+						FlxG.save.data.altMenuMusic == 9 ? "Menu Music: SDP" :
+						FlxG.save.data.altMenuMusic == 10 ? "Menu Music: I Believed It" :
 						"Menu Music: Freaky"  // Default fallback
 					)
 				];
@@ -231,7 +234,7 @@ class OptionsSubMenu extends MusicBeatState
 						updateOption(index, FlxG.save.data.donoteclick ? LanguageManager.getTextString('option_hitsound_on') : LanguageManager.getTextString('option_hitsound_off'));
 					case 1:
 						FlxG.save.data.altMenuMusic++;
-						if (FlxG.save.data.altMenuMusic > 7) FlxG.save.data.altMenuMusic = 0;
+						if (FlxG.save.data.altMenuMusic > 10) FlxG.save.data.altMenuMusic = 0;
 						var musicText:String = FlxG.save.data.altMenuMusic == 0 ? "Menu Music: Freaky" :
 							FlxG.save.data.altMenuMusic == 1 ? "Menu Music: Freakier" :
 							FlxG.save.data.altMenuMusic == 2 ? "Menu Music: Noah Engine" :
@@ -239,7 +242,10 @@ class OptionsSubMenu extends MusicBeatState
 							FlxG.save.data.altMenuMusic == 4 ? "Menu Music: Playstation" :
 							FlxG.save.data.altMenuMusic == 5 ? "Menu Music: Love Songs" :
 							FlxG.save.data.altMenuMusic == 6 ? "Menu Music: Jacobs Ladder" :
-							"Menu Music: Diddy Blud";
+							FlxG.save.data.altMenuMusic == 7 ? "Menu Music: Diddy Blud" :
+							FlxG.save.data.altMenuMusic == 8 ? "Menu Music: She Will" :
+							FlxG.save.data.altMenuMusic == 9 ? "Menu Music: SDP" :
+							"Menu Music: I Believed It";
 						updateOption(index, musicText);
 
 						// restart music
@@ -254,6 +260,9 @@ class OptionsSubMenu extends MusicBeatState
 							case 5: FlxG.sound.playMusic(Paths.music('loveSongs')); Conductor.changeBPM(120);
 							case 6: FlxG.sound.playMusic(Paths.music('jacobsLadder')); Conductor.changeBPM(146);
 							case 7: FlxG.sound.playMusic(Paths.music('diddyBlud')); Conductor.changeBPM(184);
+							case 8: FlxG.sound.playMusic(Paths.music('sheWill')); Conductor.changeBPM(152);
+							case 9: FlxG.sound.playMusic(Paths.music('sdp')); Conductor.changeBPM(120);
+							case 10: FlxG.sound.playMusic(Paths.music('iBelievedIt')); Conductor.changeBPM(145);
 						}
 				}
 

@@ -80,6 +80,21 @@ class EndingState extends MusicBeatState
                                 FlxG.sound.playMusic(Paths.music('diddyBlud'), 0);
                                 Conductor.changeBPM(146);
                             }
+                            else if (FlxG.save.data.altMenuMusic == 8) // She Will
+                            {
+                                FlxG.sound.playMusic(Paths.music('sheWill'), 0);
+                                Conductor.changeBPM(152);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 9) // SDP
+                            {
+                                FlxG.sound.playMusic(Paths.music('sdp'), 0);
+                                Conductor.changeBPM(120);
+                            }
+                            else if (FlxG.save.data.altMenuMusic == 10) // I Believed It
+                            {
+                                FlxG.sound.playMusic(Paths.music('iBelievedIt'), 0);
+                                Conductor.changeBPM(145);
+                            }
                             else // FreakyMenu (default)
                             {
                                 FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);

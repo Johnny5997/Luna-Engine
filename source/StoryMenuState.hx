@@ -211,7 +211,10 @@ class StoryMenuState extends MusicBeatState
 			{id: 4, name: 'playstation', bpm: 121},
 			{id: 5, name: 'loveSongs', bpm: 120},
 			{id: 6, name: 'jacobsLadder', bpm: 146},
-			{id: 7, name: 'diddyBlud', bpm: 146}
+			{id: 7, name: 'diddyBlud', bpm: 146},
+			{id: 8, name: 'sheWill', bpm: 152},
+			{id: 9, name: 'sdp', bpm: 120},
+			{id: 10, name: 'iBelievedIt', bpm: 145}
 		];
 		
 		var selectedMusic = musicData.filter(m -> m.id == FlxG.save.data.altMenuMusic)[0];

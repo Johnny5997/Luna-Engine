@@ -1,4 +1,4 @@
-﻿package;
+package;
 
 import flixel.system.FlxSound;
 import Controls.Device;
@@ -219,7 +219,7 @@ class FreeplayState extends MusicBeatState
 		'roofs',
 		'lunas-arcade',
 
-		'love-songs',
+
 		'yarn',
 		'roses',
 		'lunacone',
